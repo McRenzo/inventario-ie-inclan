@@ -2,41 +2,39 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Bien extends Model
 {
     use HasFactory;
 
-    // Indicamos explícitamente la tabla de la base de datos
     protected $table = 'bienes';
 
-    // Campos que permitiremos registrar masivamente desde el Excel o formulario
+    // Lista de campos que se pueden llenar desde el Importador o Formulario
     protected $fillable = [
-        'codigo_barras_qr',
-        'origen',
-        'subcategoria',
-        'descripcion',
-        'cantidad',
-        'categoria_relevo',
-        'procedencia',
-        'estado_conservacion',
-        'fecha_ingreso_origen',
-        'observaciones_origen',
-        'lab_area',
-        'lab_nivel',
-        'lab_contenido',
-        'lab_detalle_tipo',
-        'lab_ciclo',
-        'estado_actual'
-    ];
+    'codigo_barras_qr', 'nombre', 'descripcion', 'numero_serie', 'cantidad', 
+    'procedencia', 'fecha_ingreso_origen', 'categoria_id', 'ubicacion_id', 
+    'estado_id', 'estado_actual'
+];
 
-    /**
-     * Relación: Un bien patrimonial puede tener muchos movimientos (historial técnico).
-     */
-    public function movimientos()
+    // --- RELACIONES PARA LA BASE DE DATOS ---
+
+    // Un bien pertenece a una Categoría
+    public function categoria()
     {
-        return $this->hasMany(Movimiento::class, 'bien_id');
+        return $this->belongsTo(Categoria::class, 'categoria_id');
+    }
+
+    // Un bien pertenece a una Ubicación
+    public function ubicacion()
+    {
+        return $this->belongsTo(Ubicacion::class, 'ubicacion_id');
+    }
+
+    // Un bien pertenece a un Estado
+    public function estado()
+    {
+        return $this->belongsTo(Estado::class, 'estado_id');
     }
 }

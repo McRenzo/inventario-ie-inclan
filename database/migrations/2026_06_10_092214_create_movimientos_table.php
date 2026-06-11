@@ -10,12 +10,16 @@ return new class extends Migration
     {
         Schema::create('movimientos', function (Blueprint $table) {
             $table->id();
+            
+            // Relaciones directas con integridad referencial segura
             $table->foreignId('bien_id')->constrained('bienes')->onDelete('cascade');
-            $table->foreignId('usuario_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('usuario_id')->constrained('users')->onDelete('cascade'); 
+            
             $table->enum('tipo_movimiento', ['asignacion', 'mantenimiento', 'baja', 'otros']);
             $table->string('detalles_ubicacion')->nullable(); 
             $table->text('observaciones')->nullable(); 
-            $table->timestamps(); 
+            
+            $table->timestamps();
         });
     }
 
