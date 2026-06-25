@@ -55,12 +55,15 @@
                     <div class="space-y-1">
                         <p class="px-3 pb-1 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Operaciones</p>
 
-                        <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-all duration-200 bg-blue-600/10 text-blue-600 border border-blue-500/5 hover:bg-blue-600/15 group shadow-sm">
+                        <a href="{{ route('bienes.escanear') }}" 
+                        class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-all duration-200 group {{ Request::is('bienes/escanear') ? 'bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/20' : 'bg-blue-600/10 text-blue-600 border border-blue-500/5 hover:bg-blue-600/15' }}">
                             <span class="relative flex h-2 w-2 mr-0.5">
                                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                                 <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-600"></span>
                             </span>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h.01M16 20h2a2 2 0 002-2v-2M16 4h2a2 2 0 012 2v2M8 20H6a2 2 0 01-2-2v-2M8 4H6a2 2 0 00-2 2v2m4 8h8l-4-4-4 4z"/></svg>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h.01M16 20h2a2 2 0 002-2v-2M16 4h2a2 2 0 012 2v2M8 20H6a2 2 0 01-2-2v-2M8 4H6a2 2 0 00-2 2v2m4 8h8l-4-4-4 4z"/>
+                            </svg>
                             <span class="font-bold">Escanear Activo QR</span>
                         </a>
 

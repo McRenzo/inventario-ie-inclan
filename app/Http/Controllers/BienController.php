@@ -171,4 +171,20 @@ class BienController extends Controller
 
         return redirect()->route('bienes.index')->with('success', 'Activo eliminado correctamente.');
     }
+
+    public function imprimir(Request $request)
+    {
+        // Convertimos el string de IDs "1,2,3" en un array [1, 2, 3]
+        $ids = explode(',', $request->ids);
+        
+        // Obtenemos los bienes seleccionados
+        $bienes = \App\Models\Bien::whereIn('id', $ids)->get();
+        
+        // Retornamos la vista que diseñaremos a continuación
+        return view('bienes.imprimir', compact('bienes'));
+    }
+    public function escanear()
+{
+    return view('bienes.escanear');
+}
 }

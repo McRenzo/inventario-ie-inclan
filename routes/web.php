@@ -41,6 +41,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/bienes/{bien}/edit', [BienController::class, 'edit'])->name('bienes.edit');
     Route::put('/bienes/{bien}', [BienController::class, 'update'])->name('bienes.update');
     Route::delete('/bienes/{bien}', [BienController::class, 'destroy'])->name('bienes.destroy');
+    Route::post('/bienes/imprimir', [App\Http\Controllers\BienController::class, 'imprimir'])->name('bienes.imprimir');
+    Route::get('/bienes/escanear', [BienController::class, 'escanear'])->name('bienes.escanear');
 });
 
 // Rutas de Perfil

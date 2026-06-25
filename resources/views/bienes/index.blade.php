@@ -1,11 +1,20 @@
 <x-logistica-layout>
-<div x-data="{ open: {{ isset($bienEditar) ? 'true' : 'false' }}, step: 1, openDelete: false, bienId: null, bienCodigo: '', bienNombre: '' }">
+<div x-data="{ open: {{ isset($bienEditar) ? 'true' : 'false' }}, step: 1, openDelete: false, bienId: null, bienCodigo: '', bienNombre: '', selected: [] }">
 
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0 mb-8">
         <div>
             <h1 class="text-2xl font-extrabold text-gray-900 tracking-tight">Inventario de Bienes</h1>
             <p class="text-xs text-gray-500 font-medium mt-0.5">Gestión centralizada del patrimonio institucional</p>
         </div>
+        <template x-if="selected.length > 0">
+        <form action="{{ route('bienes.imprimir') }}" method="POST">
+            @csrf
+            <input type="hidden" name="ids" :value="selected">
+            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-4 py-3 rounded-xl shadow-md">
+                Imprimir <span x-text="selected.length"></span> etiquetas
+            </button>
+        </form>
+    </template>
         <button type="button" @click="open = true" class="bg-[#0a192f] hover:bg-slate-800 text-white text-xs font-bold px-4 py-3 rounded-xl shadow-md transition transform active:scale-[0.98]">
             + Registrar Nuevo Bien
         </button>
@@ -27,6 +36,8 @@
             <table class="w-full text-sm text-left text-gray-500">
                 <thead class="text-xs text-gray-400 uppercase bg-gray-50/80 font-bold tracking-wider border-b border-gray-100">
                     <tr>
+                        <th class="px-6 py-4 w-10 text-center">
+                            <input type="checkbox" @click="selected = $event.target.checked ? {{ $bienes->pluck('id') }} : []"></th>
                         <th class="px-6 py-4">Código</th>
                         <th class="px-6 py-4">Nombre / Bien</th>
                         <th class="px-6 py-4">Categoría</th>
@@ -38,6 +49,8 @@
                 <tbody class="divide-y divide-gray-100 font-medium text-gray-700">
                     @forelse ($bienes as $bien)
                         <tr class="hover:bg-gray-50/40 transition">
+                            <td class="px-6 py-4 text-center">
+                                <input type="checkbox" value="{{ $bien->id }}" x-model="selected" class="rounded"></td>
                             <td class="px-6 py-4 font-bold text-[#0a192f] font-mono text-xs">{{ $bien->codigo_barras_qr }}</td>
                             <td class="px-6 py-4">
                                 <div class="text-gray-900 font-semibold">{{ $bien->nombre }}</div>
