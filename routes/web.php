@@ -7,6 +7,7 @@ use App\Http\Controllers\BienV2Controller;
 use App\Http\Controllers\UnidadBienV2Controller;
 use App\Http\Controllers\LoteV2Controller;
 use App\Http\Controllers\DetalleInventarioV2Controller;
+use App\Http\Controllers\BusquedaCodigoV2Controller;
 
 // Ruta Raíz
 Route::get('/', function () {
@@ -43,6 +44,9 @@ Route::middleware(['auth'])->prefix('v2')->name('v2.')->group(function () {
 
     Route::put('/bienes/{bien}', [BienV2Controller::class, 'update'])
         ->name('bienes.update');
+
+    Route::get('/buscar-codigo', [BusquedaCodigoV2Controller::class, 'buscar'])
+        ->name('buscar-codigo');
 
     Route::get('/unidades/{unidad}/editar', [UnidadBienV2Controller::class, 'edit'])
         ->name('unidades.edit');

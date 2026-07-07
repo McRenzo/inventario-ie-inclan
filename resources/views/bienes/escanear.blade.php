@@ -15,6 +15,20 @@
             </p>
         </div>
 
+        @if ($errors->any())
+            <div class="rounded-2xl border border-red-200 bg-red-50 px-4 py-3">
+                <p class="font-bold text-red-700">
+                    No se pudo localizar el activo.
+                </p>
+
+                <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-red-600">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
             <div
                 id="reader"
@@ -63,7 +77,7 @@
     <script src="https://unpkg.com/html5-qrcode"></script>
 
     <script>
-        const inventarioUrl = @json(route('v2.bienes.index'));
+        const buscarCodigoUrl = @json(route('v2.buscar-codigo'));
         const baseUrl = @json(url('/'));
 
         function mostrarError(mensaje) {
@@ -132,7 +146,7 @@
             mostrarResultado(codigo);
 
             window.location.href =
-                inventarioUrl + '?buscar=' + encodeURIComponent(codigo);
+                buscarCodigoUrl + '?codigo=' + encodeURIComponent(codigo);
         }
 
         function onScanSuccess(decodedText) {
