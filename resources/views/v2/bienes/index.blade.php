@@ -719,19 +719,67 @@
             'btnImprimirEtiquetas'
         );
 
+        const camposCopias = Array.from(
+            document.querySelectorAll(
+                'input[name^="copias_unidades"], input[name^="copias_lotes"]'
+            )
+        );
+
+        function obtenerCopias(selector) {
+            const fila = selector.closest('td');
+            const campoCopias = fila?.querySelector(
+                'input[type="number"]'
+            );
+
+            if (!campoCopias) {
+                return 1;
+            }
+
+            let cantidad = Number.parseInt(
+                campoCopias.value,
+                10
+            );
+
+            if (Number.isNaN(cantidad)) {
+                cantidad = 1;
+            }
+
+            cantidad = Math.max(1, Math.min(cantidad, 20));
+            campoCopias.value = cantidad;
+
+            return cantidad;
+        }
+
         function actualizarEstado() {
             const seleccionados = selectores.filter(
                 selector => selector.checked
-            ).length;
+            );
+
+            const cantidadActivos = seleccionados.length;
+
+            const cantidadEtiquetas = seleccionados.reduce(
+                function (total, selector) {
+                    return total + obtenerCopias(selector);
+                },
+                0
+            );
+
+            const textoActivos =
+                cantidadActivos === 1
+                    ? '1 activo seleccionado'
+                    : `${cantidadActivos} activos seleccionados`;
+
+            const textoEtiquetas =
+                cantidadEtiquetas === 1
+                    ? '1 etiqueta'
+                    : `${cantidadEtiquetas} etiquetas`;
 
             contador.textContent =
-                seleccionados === 1
-                    ? '1 seleccionado'
-                    : `${seleccionados} seleccionados`;
+                `${textoActivos} · ${textoEtiquetas}`;
 
-            boton.disabled = seleccionados === 0;
+            boton.disabled = cantidadActivos === 0;
 
-            boton.className = seleccionados > 0
+            boton.className = cantidadActivos > 0
                 ? 'inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700'
                 : 'inline-flex cursor-not-allowed items-center justify-center rounded-2xl bg-slate-300 px-5 py-3 text-sm font-bold text-white transition';
 
@@ -766,6 +814,18 @@
 
         selectores.forEach(function (selector) {
             selector.addEventListener(
+                'change',
+                actualizarEstado
+            );
+        });
+
+        camposCopias.forEach(function (campo) {
+            campo.addEventListener(
+                'input',
+                actualizarEstado
+            );
+
+            campo.addEventListener(
                 'change',
                 actualizarEstado
             );
