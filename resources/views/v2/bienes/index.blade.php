@@ -20,6 +20,7 @@
             </p>
             
         </div>
+
         <div class="flex flex-wrap gap-3">
             <a
                 href="{{ route('v2.bienes.create') }}"
@@ -177,6 +178,7 @@
                         <th class="px-5 py-4">Estado</th>
                         <th class="px-5 py-4">Situación</th>
                         <th class="px-5 py-4 text-right">Valor</th>
+                        <th class="px-5 py-4 text-right">Acciones</th>
                     </tr>
                 </thead>
 
@@ -226,10 +228,19 @@
                             <td class="whitespace-nowrap px-5 py-4 text-right font-bold text-slate-900">
                                 S/ {{ number_format((float) ($unidad->valor_actual ?? 0), 2) }}
                             </td>
+
+                            <td class="whitespace-nowrap px-5 py-4 text-right">
+                                <a
+                                    href="{{ route('v2.unidades.show', $unidad) }}"
+                                    class="inline-flex items-center justify-center rounded-xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-blue-50 hover:text-blue-700"
+                                >
+                                    Ver detalle
+                                </a>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-5 py-14 text-center">
+                            <td colspan="8" class="px-5 py-14 text-center">
                                 <p class="font-semibold text-slate-500">
                                     No se encontraron bienes individuales.
                                 </p>
@@ -273,6 +284,7 @@
                         <th class="px-5 py-4">Estado</th>
                         <th class="px-5 py-4">Situación</th>
                         <th class="px-5 py-4 text-right">Valor</th>
+                        <th class="px-5 py-4 text-right">Acciones</th>
                     </tr>
                 </thead>
 
@@ -316,10 +328,19 @@
                             <td class="whitespace-nowrap px-5 py-4 text-right font-bold text-slate-900">
                                 S/ {{ number_format((float) ($lote->valor_actual ?? 0), 2) }}
                             </td>
+
+                            <td class="whitespace-nowrap px-5 py-4 text-right">
+                                <a
+                                    href="{{ route('v2.unidades.show', $unidad) }}"
+                                    class="inline-flex items-center justify-center rounded-xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-blue-50 hover:text-blue-700"
+                                >
+                                    Ver detalle
+                                </a>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-5 py-14 text-center">
+                            <td colspan="8" class="px-5 py-14 text-center">
                                 <p class="font-semibold text-slate-500">
                                     No se encontraron lotes.
                                 </p>

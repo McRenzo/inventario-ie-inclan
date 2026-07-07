@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BienV2Controller;
 use App\Http\Controllers\UnidadBienV2Controller;
 use App\Http\Controllers\LoteV2Controller;
+use App\Http\Controllers\DetalleInventarioV2Controller;
 
 // Ruta Raíz
 Route::get('/', function () {
@@ -36,6 +37,12 @@ Route::middleware(['auth'])->prefix('v2')->name('v2.')->group(function () {
 
     Route::post('/lotes', [LoteV2Controller::class, 'store'])
         ->name('lotes.store');
+
+    Route::get('/unidades/{unidad}', [DetalleInventarioV2Controller::class, 'unidad'])
+        ->name('unidades.show');
+
+    Route::get('/lotes/{lote}', [DetalleInventarioV2Controller::class, 'lote'])
+    ->name('lotes.show');
 });
 
 // Bloque de rutas protegidas

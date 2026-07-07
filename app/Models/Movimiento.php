@@ -121,4 +121,9 @@ class Movimiento extends Model
     {
         return $this->unidad ?? $this->lote;
     }
+
+    public function unidadBien()
+    {
+        return $this->belongsTo(UnidadBien::class, 'unidad_bien_id');
+    }
 }
