@@ -86,6 +86,36 @@
 
     </div>
 
+    <div class="rounded-3xl border border-slate-200/70 bg-white p-6 shadow-sm">
+        <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div>
+                <p class="text-xs font-bold uppercase tracking-[0.2em] text-emerald-600">
+                    Identificación QR
+                </p>
+
+                <h2 class="mt-2 text-lg font-black text-slate-900">
+                    Código QR del lote
+                </h2>
+
+                <p class="mt-2 max-w-xl text-sm text-slate-500">
+                    Al escanear este código se abrirá directamente la ficha de
+                    {{ $lote->codigo_interno }}.
+                </p>
+
+                <p class="mt-3 font-mono text-sm font-bold text-emerald-600">
+                    {{ $lote->codigo_interno }}
+                </p>
+            </div>
+
+            <div class="shrink-0 rounded-3xl border border-slate-200 bg-white p-4">
+                {!! SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')
+                    ->size(190)
+                    ->margin(1)
+                    ->generate(route('v2.lotes.show', $lote)) !!}
+            </div>
+        </div>
+    </div>
+
     <div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
 
         <div class="rounded-3xl border border-slate-200/70 bg-white p-6 shadow-sm">
