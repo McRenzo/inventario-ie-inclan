@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Bien extends Model
 {
@@ -11,30 +11,55 @@ class Bien extends Model
 
     protected $table = 'bienes';
 
-    // Lista de campos que se pueden llenar desde el Importador o Formulario
     protected $fillable = [
-    'codigo_barras_qr', 'nombre', 'descripcion', 'numero_serie', 'cantidad', 
-    'procedencia', 'fecha_ingreso_origen', 'categoria_id', 'ubicacion_id', 
-    'estado_id', 'estado_actual'
-];
+        'nombre',
+        'descripcion',
+        'categoria_id',
+        'tipo_control',
+        'marca',
+        'modelo',
+        'material',
+        'nivel_educativo',
+        'ciclo',
+        'procedencia',
+        'fuente_financiamiento_id',
+        'es_depreciable',
+        'vida_util_meses',
+        'valor_residual_porcentaje',
+        'observaciones',
+        'activo',
+    ];
 
-    // --- RELACIONES PARA LA BASE DE DATOS ---
+    protected function casts(): array
+    {
+        return [
+            'es_depreciable' => 'boolean',
+            'vida_util_meses' => 'integer',
+            'valor_residual_porcentaje' => 'decimal:2',
+            'activo' => 'boolean',
+        ];
+    }
 
-    // Un bien pertenece a una Categoría
     public function categoria()
     {
         return $this->belongsTo(Categoria::class, 'categoria_id');
     }
 
-    // Un bien pertenece a una Ubicación
-    public function ubicacion()
+    public function fuenteFinanciamiento()
     {
-        return $this->belongsTo(Ubicacion::class, 'ubicacion_id');
+        return $this->belongsTo(
+            FuenteFinanciamiento::class,
+            'fuente_financiamiento_id'
+        );
     }
 
-    // Un bien pertenece a un Estado
-    public function estado()
+    public function unidades()
     {
-        return $this->belongsTo(Estado::class, 'estado_id');
+        return $this->hasMany(UnidadBien::class, 'bien_id');
+    }
+
+    public function lotes()
+    {
+        return $this->hasMany(Lote::class, 'bien_id');
     }
 }

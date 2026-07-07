@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             // Añadimos el campo rol. Por defecto será 'soporte'
-            $table->enum('role', ['logistica', 'soporte'])->default('soporte')->after('email');
+            $table->enum('role', ['administrador', 'operador'])->default('operador');
         });
     }
 

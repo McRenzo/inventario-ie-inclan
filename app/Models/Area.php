@@ -5,17 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Ubicacion extends Model
+class Area extends Model
 {
     use HasFactory;
 
-    protected $table = 'ubicaciones';
+    protected $table = 'areas';
 
     protected $fillable = [
         'nombre',
-        'codigo',
         'descripcion',
-        'area_id',
         'activo',
     ];
 
@@ -26,18 +24,18 @@ class Ubicacion extends Model
         ];
     }
 
-    public function area()
+    public function ubicaciones()
     {
-        return $this->belongsTo(Area::class, 'area_id');
+        return $this->hasMany(Ubicacion::class, 'area_id');
     }
 
     public function unidades()
     {
-        return $this->hasMany(UnidadBien::class, 'ubicacion_id');
+        return $this->hasMany(UnidadBien::class, 'area_id');
     }
 
     public function lotes()
     {
-        return $this->hasMany(Lote::class, 'ubicacion_id');
+        return $this->hasMany(Lote::class, 'area_id');
     }
 }
