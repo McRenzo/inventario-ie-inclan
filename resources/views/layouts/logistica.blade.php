@@ -151,10 +151,14 @@
             </header>
 
             <main class="py-6 pb-24 flex-1">
-                <div class="animate-fade-in">
-                    @yield('content')
-                </div>
-            </main>
+    <div class="animate-fade-in">
+        @isset($slot)
+            {{ $slot }}
+        @else
+            @yield('content')
+        @endisset
+    </div>
+</main>
 
             <footer class="sticky bottom-0 lg:bottom-4 z-10 bg-white/70 border border-slate-200/60 backdrop-blur-md px-6 py-4 rounded-2xl shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.02)] flex flex-col sm:flex-row items-center justify-between text-[11px] font-semibold text-slate-400 tracking-wide gap-2">
                 <p>© 2026 Inventario Inclán. Panel de Control y Activos Institucionales.</p>
