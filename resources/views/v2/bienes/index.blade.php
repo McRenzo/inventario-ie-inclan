@@ -331,8 +331,8 @@
 
                             <td class="whitespace-nowrap px-5 py-4 text-right">
                                 <a
-                                    href="{{ route('v2.unidades.show', $unidad) }}"
-                                    class="inline-flex items-center justify-center rounded-xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-blue-50 hover:text-blue-700"
+                                    href="{{ route('v2.lotes.show', $lote) }}"
+                                    class="inline-flex rounded-xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-emerald-50 hover:text-emerald-700"
                                 >
                                     Ver detalle
                                 </a>
