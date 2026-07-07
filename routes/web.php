@@ -8,6 +8,7 @@ use App\Http\Controllers\UnidadBienV2Controller;
 use App\Http\Controllers\LoteV2Controller;
 use App\Http\Controllers\DetalleInventarioV2Controller;
 use App\Http\Controllers\BusquedaCodigoV2Controller;
+use App\Http\Controllers\EtiquetasQrV2Controller;
 
 // Ruta Raíz
 Route::get('/', function () {
@@ -47,6 +48,9 @@ Route::middleware(['auth'])->prefix('v2')->name('v2.')->group(function () {
 
     Route::get('/buscar-codigo', [BusquedaCodigoV2Controller::class, 'buscar'])
         ->name('buscar-codigo');
+
+    Route::post('/etiquetas/imprimir', [EtiquetasQrV2Controller::class, 'imprimir'])
+        ->name('etiquetas.imprimir');
 
     Route::get('/unidades/{unidad}/editar', [UnidadBienV2Controller::class, 'edit'])
         ->name('unidades.edit');
