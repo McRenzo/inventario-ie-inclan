@@ -18,12 +18,27 @@
             </p>
         </div>
 
-        <a
-            href="{{ route('v2.bienes.index') }}"
-            class="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-600 transition hover:bg-slate-50"
-        >
-            Volver al inventario
-        </a>
+        <div class="flex flex-wrap gap-3">
+            <a
+                href="{{ route('v2.unidades.edit', $unidad) }}"
+                class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700"
+            >
+                Editar unidad
+            </a>
+
+            <a
+                href="{{ route('v2.bienes.index') }}"
+                class="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-600 transition hover:bg-slate-50"
+            >
+                Volver al inventario
+            </a>
+        </div>
+
+        @if (session('success'))
+    <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">
+        {{ session('success') }}
+    </div>
+@endif
     </div>
 
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">

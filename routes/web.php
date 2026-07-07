@@ -38,11 +38,17 @@ Route::middleware(['auth'])->prefix('v2')->name('v2.')->group(function () {
     Route::post('/lotes', [LoteV2Controller::class, 'store'])
         ->name('lotes.store');
 
+    Route::get('/unidades/{unidad}/editar', [UnidadBienV2Controller::class, 'edit'])
+        ->name('unidades.edit');
+
+    Route::put('/unidades/{unidad}', [UnidadBienV2Controller::class, 'update'])
+        ->name('unidades.update');
+
     Route::get('/unidades/{unidad}', [DetalleInventarioV2Controller::class, 'unidad'])
         ->name('unidades.show');
 
     Route::get('/lotes/{lote}', [DetalleInventarioV2Controller::class, 'lote'])
-    ->name('lotes.show');
+        ->name('lotes.show');
 });
 
 // Bloque de rutas protegidas
