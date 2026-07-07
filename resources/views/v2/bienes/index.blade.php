@@ -366,223 +366,227 @@
     </div>
 
     {{-- Tabla de unidades --}}
-    <div class="overflow-hidden rounded-3xl border border-slate-200/70 bg-white shadow-sm">
+    @if ($filtros['tipo'] !== 'lotes')
+        <div class="overflow-hidden rounded-3xl border border-slate-200/70 bg-white shadow-sm">
 
-        <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
-            <div>
-                <h2 class="font-black text-slate-900">
-                    Bienes individuales
-                </h2>
+            <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+                <div>
+                    <h2 class="font-black text-slate-900">
+                        Bienes individuales
+                    </h2>
 
-                <p class="mt-1 text-xs text-slate-400">
-                    Equipos o bienes controlados uno por uno.
-                </p>
+                    <p class="mt-1 text-xs text-slate-400">
+                        {{ $unidades->total() }} resultado(s) encontrado(s).
+                    </p>
+                </div>
             </div>
-        </div>
 
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-100 text-sm">
-                <thead class="bg-slate-50/80">
-                    <tr class="text-left text-xs font-bold uppercase tracking-wider text-slate-400">
-                        <th class="px-5 py-4">Código</th>
-                        <th class="px-5 py-4">Bien</th>
-                        <th class="px-5 py-4">Serie</th>
-                        <th class="px-5 py-4">Ubicación</th>
-                        <th class="px-5 py-4">Estado</th>
-                        <th class="px-5 py-4">Situación</th>
-                        <th class="px-5 py-4 text-right">Valor</th>
-                        <th class="px-5 py-4 text-right">Acciones</th>
-                    </tr>
-                </thead>
-
-                <tbody class="divide-y divide-slate-100">
-                    @forelse ($unidades as $unidad)
-                        <tr class="transition hover:bg-slate-50/70">
-
-                            <td class="whitespace-nowrap px-5 py-4">
-                                <span class="font-bold text-blue-600">
-                                    {{ $unidad->codigo_interno }}
-                                </span>
-                            </td>
-
-                            <td class="px-5 py-4">
-                                <p class="font-bold text-slate-900">
-                                    {{ $unidad->bien?->nombre ?? 'Sin ficha' }}
-                                </p>
-
-                                <p class="mt-1 text-xs text-slate-400">
-                                    {{ trim(
-                                        ($unidad->bien?->marca ?? '') . ' ' .
-                                        ($unidad->bien?->modelo ?? '')
-                                    ) ?: 'Sin marca o modelo' }}
-                                </p>
-
-                                <a
-                                    href="{{ route('v2.bienes.edit', $unidad->bien) }}"
-                                    class="mt-2 inline-flex text-xs font-bold text-blue-600 hover:text-blue-800"
-                                >
-                                    Editar ficha
-                                </a>
-                            </td>
-
-                            <td class="whitespace-nowrap px-5 py-4 text-slate-600">
-                                {{ $unidad->numero_serie ?: 'Sin serie' }}
-                            </td>
-
-                            <td class="whitespace-nowrap px-5 py-4 text-slate-600">
-                                {{ $unidad->ubicacion?->nombre ?? 'Sin ubicación' }}
-                            </td>
-
-                            <td class="whitespace-nowrap px-5 py-4">
-                                <span class="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
-                                    {{ $unidad->estadoConservacion?->nombre ?? 'No determinado' }}
-                                </span>
-                            </td>
-
-                            <td class="whitespace-nowrap px-5 py-4">
-                                <span class="inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-bold capitalize text-blue-700">
-                                    {{ str_replace('_', ' ', $unidad->situacion) }}
-                                </span>
-                            </td>
-
-                            <td class="whitespace-nowrap px-5 py-4 text-right font-bold text-slate-900">
-                                S/ {{ number_format((float) ($unidad->valor_actual ?? 0), 2) }}
-                            </td>
-
-                            <td class="whitespace-nowrap px-5 py-4 text-right">
-                                <a
-                                    href="{{ route('v2.unidades.show', $unidad) }}"
-                                    class="inline-flex items-center justify-center rounded-xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-blue-50 hover:text-blue-700"
-                                >
-                                    Ver detalle
-                                </a>
-                            </td>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-slate-100 text-sm">
+                    <thead class="bg-slate-50/80">
+                        <tr class="text-left text-xs font-bold uppercase tracking-wider text-slate-400">
+                            <th class="px-5 py-4">Código</th>
+                            <th class="px-5 py-4">Bien</th>
+                            <th class="px-5 py-4">Serie</th>
+                            <th class="px-5 py-4">Ubicación</th>
+                            <th class="px-5 py-4">Estado</th>
+                            <th class="px-5 py-4">Situación</th>
+                            <th class="px-5 py-4 text-right">Valor</th>
+                            <th class="px-5 py-4 text-right">Acciones</th>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="px-5 py-14 text-center">
-                                <p class="font-semibold text-slate-500">
-                                    No se encontraron bienes individuales.
-                                </p>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                    </thead>
 
-        @if ($unidades->hasPages())
-            <div class="border-t border-slate-100 px-5 py-4">
-                {{ $unidades->links() }}
+                    <tbody class="divide-y divide-slate-100">
+                        @forelse ($unidades as $unidad)
+                            <tr class="transition hover:bg-slate-50/70">
+
+                                <td class="whitespace-nowrap px-5 py-4">
+                                    <span class="font-bold text-blue-600">
+                                        {{ $unidad->codigo_interno }}
+                                    </span>
+                                </td>
+
+                                <td class="px-5 py-4">
+                                    <p class="font-bold text-slate-900">
+                                        {{ $unidad->bien?->nombre ?? 'Sin ficha' }}
+                                    </p>
+
+                                    <p class="mt-1 text-xs text-slate-400">
+                                        {{ trim(
+                                            ($unidad->bien?->marca ?? '') . ' ' .
+                                            ($unidad->bien?->modelo ?? '')
+                                        ) ?: 'Sin marca o modelo' }}
+                                    </p>
+
+                                    <a
+                                        href="{{ route('v2.bienes.edit', $unidad->bien) }}"
+                                        class="mt-2 inline-flex text-xs font-bold text-blue-600 hover:text-blue-800"
+                                    >
+                                        Editar ficha
+                                    </a>
+                                </td>
+
+                                <td class="whitespace-nowrap px-5 py-4 text-slate-600">
+                                    {{ $unidad->numero_serie ?: 'Sin serie' }}
+                                </td>
+
+                                <td class="whitespace-nowrap px-5 py-4 text-slate-600">
+                                    {{ $unidad->ubicacion?->nombre ?? 'Sin ubicación' }}
+                                </td>
+
+                                <td class="whitespace-nowrap px-5 py-4">
+                                    <span class="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+                                        {{ $unidad->estadoConservacion?->nombre ?? 'No determinado' }}
+                                    </span>
+                                </td>
+
+                                <td class="whitespace-nowrap px-5 py-4">
+                                    <span class="inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-bold capitalize text-blue-700">
+                                        {{ str_replace('_', ' ', $unidad->situacion) }}
+                                    </span>
+                                </td>
+
+                                <td class="whitespace-nowrap px-5 py-4 text-right font-bold text-slate-900">
+                                    S/ {{ number_format((float) ($unidad->valor_actual ?? 0), 2) }}
+                                </td>
+
+                                <td class="whitespace-nowrap px-5 py-4 text-right">
+                                    <a
+                                        href="{{ route('v2.unidades.show', $unidad) }}"
+                                        class="inline-flex items-center justify-center rounded-xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-blue-50 hover:text-blue-700"
+                                    >
+                                        Ver detalle
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="8" class="px-5 py-14 text-center">
+                                    <p class="font-semibold text-slate-500">
+                                        No se encontraron bienes individuales.
+                                    </p>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
-        @endif
-    </div>
+
+            @if ($unidades->hasPages())
+                <div class="border-t border-slate-100 px-5 py-4">
+                    {{ $unidades->links() }}
+                </div>
+            @endif
+        </div>
+    @endif
 
     {{-- Tabla de lotes --}}
-    <div class="overflow-hidden rounded-3xl border border-slate-200/70 bg-white shadow-sm">
+    @if ($filtros['tipo'] !== 'unidades')
+        <div class="overflow-hidden rounded-3xl border border-slate-200/70 bg-white shadow-sm">
 
-        <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
-            <div>
-                <h2 class="font-black text-slate-900">
-                    Lotes
-                </h2>
+            <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+                <div>
+                    <h2 class="font-black text-slate-900">
+                        Lotes
+                    </h2>
 
-                <p class="mt-1 text-xs text-slate-400">
-                    Bienes o materiales gestionados por cantidad.
-                </p>
+                    <p class="mt-1 text-xs text-slate-400">
+                        {{ $lotes->total() }} resultado(s) encontrado(s).
+                    </p>
+                </div>
             </div>
-        </div>
 
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-100 text-sm">
-                <thead class="bg-slate-50/80">
-                    <tr class="text-left text-xs font-bold uppercase tracking-wider text-slate-400">
-                        <th class="px-5 py-4">Código</th>
-                        <th class="px-5 py-4">Bien</th>
-                        <th class="px-5 py-4">Cantidad</th>
-                        <th class="px-5 py-4">Ubicación</th>
-                        <th class="px-5 py-4">Estado</th>
-                        <th class="px-5 py-4">Situación</th>
-                        <th class="px-5 py-4 text-right">Valor</th>
-                        <th class="px-5 py-4 text-right">Acciones</th>
-                    </tr>
-                </thead>
-
-                <tbody class="divide-y divide-slate-100">
-                    @forelse ($lotes as $lote)
-                        <tr class="transition hover:bg-slate-50/70">
-
-                            <td class="whitespace-nowrap px-5 py-4">
-                                <span class="font-bold text-blue-600">
-                                    {{ $lote->codigo_interno }}
-                                </span>
-                            </td>
-
-                            <td class="px-5 py-4">
-                                <p class="font-bold text-slate-900">
-                                    {{ $lote->bien?->nombre ?? 'Sin ficha' }}
-                                </p>
-                                <a
-                                    href="{{ route('v2.bienes.edit', $lote->bien) }}"
-                                    class="mt-2 inline-flex text-xs font-bold text-blue-600 hover:text-blue-800"
-                                >
-                                    Editar ficha
-                                </a>
-                            </td>
-
-                            <td class="whitespace-nowrap px-5 py-4 text-slate-600">
-                                {{ number_format($lote->cantidad_actual, 2) }}
-                                {{ $lote->unidad_medida }}
-                            </td>
-
-                            <td class="whitespace-nowrap px-5 py-4 text-slate-600">
-                                {{ $lote->ubicacion?->nombre ?? 'Sin ubicación' }}
-                            </td>
-
-                            <td class="whitespace-nowrap px-5 py-4">
-                                <span class="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
-                                    {{ $lote->estadoConservacion?->nombre ?? 'No determinado' }}
-                                </span>
-                            </td>
-
-                            <td class="whitespace-nowrap px-5 py-4">
-                                <span class="inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-bold capitalize text-blue-700">
-                                    {{ str_replace('_', ' ', $lote->situacion) }}
-                                </span>
-                            </td>
-
-                            <td class="whitespace-nowrap px-5 py-4 text-right font-bold text-slate-900">
-                                S/ {{ number_format((float) ($lote->valor_actual ?? 0), 2) }}
-                            </td>
-
-                            <td class="whitespace-nowrap px-5 py-4 text-right">
-                                <a
-                                    href="{{ route('v2.lotes.show', $lote) }}"
-                                    class="inline-flex rounded-xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-emerald-50 hover:text-emerald-700"
-                                >
-                                    Ver detalle
-                                </a>
-                            </td>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-slate-100 text-sm">
+                    <thead class="bg-slate-50/80">
+                        <tr class="text-left text-xs font-bold uppercase tracking-wider text-slate-400">
+                            <th class="px-5 py-4">Código</th>
+                            <th class="px-5 py-4">Bien</th>
+                            <th class="px-5 py-4">Cantidad</th>
+                            <th class="px-5 py-4">Ubicación</th>
+                            <th class="px-5 py-4">Estado</th>
+                            <th class="px-5 py-4">Situación</th>
+                            <th class="px-5 py-4 text-right">Valor</th>
+                            <th class="px-5 py-4 text-right">Acciones</th>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="px-5 py-14 text-center">
-                                <p class="font-semibold text-slate-500">
-                                    No se encontraron lotes.
-                                </p>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                    </thead>
 
-        @if ($lotes->hasPages())
-            <div class="border-t border-slate-100 px-5 py-4">
-                {{ $lotes->links() }}
+                    <tbody class="divide-y divide-slate-100">
+                        @forelse ($lotes as $lote)
+                            <tr class="transition hover:bg-slate-50/70">
+
+                                <td class="whitespace-nowrap px-5 py-4">
+                                    <span class="font-bold text-blue-600">
+                                        {{ $lote->codigo_interno }}
+                                    </span>
+                                </td>
+
+                                <td class="px-5 py-4">
+                                    <p class="font-bold text-slate-900">
+                                        {{ $lote->bien?->nombre ?? 'Sin ficha' }}
+                                    </p>
+                                    <a
+                                        href="{{ route('v2.bienes.edit', $lote->bien) }}"
+                                        class="mt-2 inline-flex text-xs font-bold text-blue-600 hover:text-blue-800"
+                                    >
+                                        Editar ficha
+                                    </a>
+                                </td>
+
+                                <td class="whitespace-nowrap px-5 py-4 text-slate-600">
+                                    {{ number_format($lote->cantidad_actual, 2) }}
+                                    {{ $lote->unidad_medida }}
+                                </td>
+
+                                <td class="whitespace-nowrap px-5 py-4 text-slate-600">
+                                    {{ $lote->ubicacion?->nombre ?? 'Sin ubicación' }}
+                                </td>
+
+                                <td class="whitespace-nowrap px-5 py-4">
+                                    <span class="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+                                        {{ $lote->estadoConservacion?->nombre ?? 'No determinado' }}
+                                    </span>
+                                </td>
+
+                                <td class="whitespace-nowrap px-5 py-4">
+                                    <span class="inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-bold capitalize text-blue-700">
+                                        {{ str_replace('_', ' ', $lote->situacion) }}
+                                    </span>
+                                </td>
+
+                                <td class="whitespace-nowrap px-5 py-4 text-right font-bold text-slate-900">
+                                    S/ {{ number_format((float) ($lote->valor_actual ?? 0), 2) }}
+                                </td>
+
+                                <td class="whitespace-nowrap px-5 py-4 text-right">
+                                    <a
+                                        href="{{ route('v2.lotes.show', $lote) }}"
+                                        class="inline-flex rounded-xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-emerald-50 hover:text-emerald-700"
+                                    >
+                                        Ver detalle
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="8" class="px-5 py-14 text-center">
+                                    <p class="font-semibold text-slate-500">
+                                        No se encontraron lotes.
+                                    </p>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
-        @endif
-    </div>
+
+            @if ($lotes->hasPages())
+                <div class="border-t border-slate-100 px-5 py-4">
+                    {{ $lotes->links() }}
+                </div>
+            @endif
+        </div>
+    @endif
 
 </div>
 @endsection
