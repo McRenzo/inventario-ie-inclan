@@ -447,13 +447,25 @@
                                 <tr class="transition hover:bg-slate-50/70">
 
                                     <td class="px-5 py-4">
-                                        <input
-                                            type="checkbox"
-                                            name="unidades[]"
-                                            value="{{ $unidad->id }}"
-                                            class="selector-etiqueta selector-unidad h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                                            aria-label="Seleccionar {{ $unidad->codigo_interno }}"
-                                        >
+                                        <div class="flex items-center gap-2">
+                                            <input
+                                                type="checkbox"
+                                                name="unidades[]"
+                                                value="{{ $unidad->id }}"
+                                                class="selector-etiqueta selector-unidad h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                                aria-label="Seleccionar {{ $unidad->codigo_interno }}"
+                                            >
+
+                                            <input
+                                                type="number"
+                                                name="copias_unidades[{{ $unidad->id }}]"
+                                                value="1"
+                                                min="1"
+                                                max="20"
+                                                class="w-16 rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-xs"
+                                                title="Cantidad de copias"
+                                            >
+                                        </div>
                                     </td>
                                     
                                     <td class="whitespace-nowrap px-5 py-4">
@@ -580,13 +592,25 @@
                                 <tr class="transition hover:bg-slate-50/70">
 
                                     <td class="px-5 py-4">
-                                        <input
-                                            type="checkbox"
-                                            name="lotes[]"
-                                            value="{{ $lote->id }}"
-                                            class="selector-etiqueta selector-lote h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
-                                            aria-label="Seleccionar {{ $lote->codigo_interno }}"
-                                        >
+                                        <div class="flex items-center gap-2">
+                                            <input
+                                                type="checkbox"
+                                                name="lotes[]"
+                                                value="{{ $lote->id }}"
+                                                class="selector-etiqueta selector-lote h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                                                aria-label="Seleccionar {{ $lote->codigo_interno }}"
+                                            >
+
+                                            <input
+                                                type="number"
+                                                name="copias_lotes[{{ $lote->id }}]"
+                                                value="1"
+                                                min="1"
+                                                max="20"
+                                                class="w-16 rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-xs"
+                                                title="Cantidad de copias"
+                                            >
+                                        </div>
                                     </td>
 
                                     <td class="whitespace-nowrap px-5 py-4">

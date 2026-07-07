@@ -10,69 +10,109 @@ use Illuminate\View\View;
 class EtiquetasQrV2Controller extends Controller
 {
     public function imprimir(Request $request): View
-    {
-        $datos = $request->validate([
-            'unidades' => [
-                'nullable',
-                'array',
-            ],
+{
+    $datos = $request->validate([
+        'unidades' => [
+            'nullable',
+            'array',
+        ],
 
-            'unidades.*' => [
-                'integer',
-                'exists:unidades_bien,id',
-            ],
+        'unidades.*' => [
+            'integer',
+            'exists:unidades_bien,id',
+        ],
 
-            'lotes' => [
-                'nullable',
-                'array',
-            ],
+        'lotes' => [
+            'nullable',
+            'array',
+        ],
 
-            'lotes.*' => [
-                'integer',
-                'exists:lotes,id',
-            ],
-        ]);
+        'lotes.*' => [
+            'integer',
+            'exists:lotes,id',
+        ],
 
-        $idsUnidades = collect($datos['unidades'] ?? [])
-            ->map(fn ($id) => (int) $id)
-            ->unique()
-            ->values();
+        'copias_unidades' => [
+            'nullable',
+            'array',
+        ],
 
-        $idsLotes = collect($datos['lotes'] ?? [])
-            ->map(fn ($id) => (int) $id)
-            ->unique()
-            ->values();
+        'copias_unidades.*' => [
+            'integer',
+            'min:1',
+            'max:20',
+        ],
 
-        if ($idsUnidades->isEmpty() && $idsLotes->isEmpty()) {
-            abort(
-                422,
-                'Debes seleccionar al menos una unidad o un lote.'
-            );
-        }
+        'copias_lotes' => [
+            'nullable',
+            'array',
+        ],
 
-        $unidades = UnidadBien::query()
-            ->with([
-                'bien',
-                'area',
-                'ubicacion',
-            ])
-            ->whereIn('id', $idsUnidades)
-            ->orderBy('codigo_interno')
-            ->get();
+        'copias_lotes.*' => [
+            'integer',
+            'min:1',
+            'max:20',
+        ],
+    ]);
 
-        $lotes = Lote::query()
-            ->with([
-                'bien',
-                'area',
-                'ubicacion',
-            ])
-            ->whereIn('id', $idsLotes)
-            ->orderBy('codigo_interno')
-            ->get();
+    $idsUnidades = collect($datos['unidades'] ?? [])
+        ->map(fn ($id) => (int) $id)
+        ->unique()
+        ->values();
 
-        $etiquetas = collect();
+    $idsLotes = collect($datos['lotes'] ?? [])
+        ->map(fn ($id) => (int) $id)
+        ->unique()
+        ->values();
 
-        foreach ($unidades as $unidad) {
+    if ($idsUnidades->isEmpty() && $idsLotes->isEmpty()) {
+        return redirect()
+            ->route('v2.bienes.index')
+            ->withErrors([
+                'etiquetas' =>
+                    'Debes seleccionar al menos una unidad o un lote.',
+            ]);
+    }
+
+    $unidades = UnidadBien::query()
+        ->with([
+            'bien',
+            'area',
+            'ubicacion',
+        ])
+        ->whereIn('id', $idsUnidades)
+        ->orderBy('codigo_interno')
+        ->get();
+
+    $lotes = Lote::query()
+        ->with([
+            'bien',
+            'area',
+            'ubicacion',
+        ])
+        ->whereIn('id', $idsLotes)
+        ->orderBy('codigo_interno')
+        ->get();
+
+    $copiasUnidades = collect(
+        $datos['copias_unidades'] ?? []
+    );
+
+    $copiasLotes = collect(
+        $datos['copias_lotes'] ?? []
+    );
+
+    $etiquetas = collect();
+
+    foreach ($unidades as $unidad) {
+        $copias = (int) $copiasUnidades->get(
+            $unidad->id,
+            1
+        );
+
+        $copias = max(1, min($copias, 20));
+
+        for ($i = 0; $i < $copias; $i++) {
             $etiquetas->push([
                 'tipo' => 'unidad',
                 'codigo' => $unidad->codigo_interno,
@@ -87,8 +127,17 @@ class EtiquetasQrV2Controller extends Controller
                 ),
             ]);
         }
+    }
 
-        foreach ($lotes as $lote) {
+    foreach ($lotes as $lote) {
+        $copias = (int) $copiasLotes->get(
+            $lote->id,
+            1
+        );
+
+        $copias = max(1, min($copias, 20));
+
+        for ($i = 0; $i < $copias; $i++) {
             $etiquetas->push([
                 'tipo' => 'lote',
                 'codigo' => $lote->codigo_interno,
@@ -104,10 +153,11 @@ class EtiquetasQrV2Controller extends Controller
                 ),
             ]);
         }
-
-        return view(
-            'v2.etiquetas.imprimir',
-            compact('etiquetas')
-        );
     }
+
+    return view(
+        'v2.etiquetas.imprimir',
+        compact('etiquetas')
+    );
+}
 }
