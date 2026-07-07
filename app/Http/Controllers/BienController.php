@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bien;
+use Illuminate\Support\Facades\DB;
 use App\Models\Categoria;
 use App\Models\Ubicacion;
 use App\Models\Estado;
 use App\Imports\BienesImport; // 1. 👇 IMPORTAMOS LA CLASE QUE CREAMOS
+use App\Exports\BienesExport;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel; // 2. 👇 IMPORTAMOS LA FACHADA DE EXCEL
 
@@ -34,6 +36,11 @@ class BienController extends Controller
     public function importForm()
     {
         return view('bienes.import');
+    }
+
+    public function exportarExcel() 
+    {
+        return Excel::download(new BienesExport, 'inventario_inclan_'.date('Y-m-d').'.xlsx');
     }
 
     // 4. Procesa el archivo subido
@@ -183,8 +190,24 @@ class BienController extends Controller
         // Retornamos la vista que diseñaremos a continuación
         return view('bienes.imprimir', compact('bienes'));
     }
+
     public function escanear()
-{
-    return view('bienes.escanear');
-}
+    {
+        return view('bienes.escanear');
+    }
+
+    public function reportes()
+    {
+        $totalBienes = Bien::count();
+
+        // El join correcto para tu estructura con tabla 'estados'
+        $bienesPorEstado = DB::table('bienes')
+            ->join('estados', 'bienes.estado_id', '=', 'estados.id')
+            ->select('estados.nombre as estado', DB::raw('count(*) as total'))
+            ->groupBy('estados.nombre')
+            ->get();
+
+        return view('bienes.reportes', compact('totalBienes', 'bienesPorEstado'));
+    }
+
 }
