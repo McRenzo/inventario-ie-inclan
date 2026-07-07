@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BienController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BienV2Controller;
+use App\Http\Controllers\UnidadBienV2Controller;
+use App\Http\Controllers\LoteV2Controller;
 
 // Ruta Raíz
 Route::get('/', function () {
@@ -16,6 +18,24 @@ Route::get('/', function () {
 Route::middleware(['auth'])->prefix('v2')->name('v2.')->group(function () {
     Route::get('/bienes', [BienV2Controller::class, 'index'])
         ->name('bienes.index');
+
+    Route::get('/bienes/crear', [BienV2Controller::class, 'create'])
+        ->name('bienes.create');
+
+    Route::post('/bienes', [BienV2Controller::class, 'store'])
+        ->name('bienes.store');
+
+    Route::get('/unidades/crear', [UnidadBienV2Controller::class, 'create'])
+    ->name('unidades.create');
+
+    Route::post('/unidades', [UnidadBienV2Controller::class, 'store'])
+        ->name('unidades.store');
+
+    Route::get('/lotes/crear', [LoteV2Controller::class, 'create'])
+    ->name('lotes.create');
+
+    Route::post('/lotes', [LoteV2Controller::class, 'store'])
+        ->name('lotes.store');
 });
 
 // Bloque de rutas protegidas

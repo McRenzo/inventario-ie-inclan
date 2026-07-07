@@ -7,6 +7,9 @@ use App\Models\Lote;
 use App\Models\UnidadBien;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use App\Models\Categoria;
+use App\Models\FuenteFinanciamiento;
+use Illuminate\Http\RedirectResponse;
 
 class BienV2Controller extends Controller
 {
@@ -87,4 +90,76 @@ class BienV2Controller extends Controller
             'busqueda'
         ));
     }
+
+    public function create(): View
+{
+    $categorias = Categoria::query()
+        ->where('activo', true)
+        ->orderBy('nombre')
+        ->get();
+
+    $fuentes = FuenteFinanciamiento::query()
+        ->where('activo', true)
+        ->orderBy('nombre')
+        ->get();
+
+    return view('v2.bienes.create', compact(
+        'categorias',
+        'fuentes'
+    ));
+}
+
+public function store(Request $request): RedirectResponse
+{
+    $datos = $request->validate([
+        'nombre' => ['required', 'string', 'max:255'],
+        'descripcion' => ['nullable', 'string'],
+        'categoria_id' => ['nullable', 'exists:categorias,id'],
+        'tipo_control' => [
+            'required',
+            'in:individual,lote,consumible',
+        ],
+        'marca' => ['nullable', 'string', 'max:255'],
+        'modelo' => ['nullable', 'string', 'max:255'],
+        'material' => ['nullable', 'string', 'max:255'],
+        'nivel_educativo' => ['nullable', 'string', 'max:255'],
+        'ciclo' => ['nullable', 'string', 'max:255'],
+        'procedencia' => ['nullable', 'string', 'max:255'],
+        'fuente_financiamiento_id' => [
+            'nullable',
+            'exists:fuentes_financiamiento,id',
+        ],
+        'es_depreciable' => ['nullable', 'boolean'],
+        'vida_util_meses' => [
+            'nullable',
+            'integer',
+            'min:1',
+            'max:1200',
+        ],
+        'valor_residual_porcentaje' => [
+            'nullable',
+            'numeric',
+            'min:0',
+            'max:100',
+        ],
+        'observaciones' => ['nullable', 'string'],
+    ]);
+
+    $datos['es_depreciable'] = $request->boolean('es_depreciable');
+    $datos['activo'] = true;
+
+    if (! $datos['es_depreciable']) {
+        $datos['vida_util_meses'] = null;
+        $datos['valor_residual_porcentaje'] = 0;
+    }
+
+    $bien = Bien::create($datos);
+
+    return redirect()
+        ->route('v2.bienes.index')
+        ->with(
+            'success',
+            "La ficha «{$bien->nombre}» fue creada correctamente."
+        );
+}
 }

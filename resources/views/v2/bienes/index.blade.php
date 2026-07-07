@@ -5,6 +5,7 @@
 
     {{-- Encabezado --}}
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        
         <div>
             <p class="text-xs font-bold uppercase tracking-[0.2em] text-blue-600">
                 Inventario institucional
@@ -17,8 +18,37 @@
             <p class="mt-1 text-sm text-slate-500">
                 Bienes individuales y lotes registrados en la nueva estructura.
             </p>
+            
+        </div>
+        <div class="flex flex-wrap gap-3">
+            <a
+                href="{{ route('v2.bienes.create') }}"
+                class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700"
+            >
+                Nueva ficha de bien
+            </a>
+
+            <a
+                href="{{ route('v2.unidades.create') }}"
+                class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-blue-50 px-5 py-3 text-sm font-bold text-blue-700 transition hover:bg-blue-100"
+            >
+                Registrar unidad
+            </a>
+
+            <a
+                href="{{ route('v2.lotes.create') }}"
+                class="inline-flex items-center justify-center rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-3 text-sm font-bold text-emerald-700 transition hover:bg-emerald-100"
+            >
+                Registrar lote
+            </a>
         </div>
     </div>
+
+    @if (session('success'))
+        <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">
+            {{ session('success') }}
+        </div>
+    @endif
 
     {{-- Tarjetas de resumen --}}
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
