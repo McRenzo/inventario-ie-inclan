@@ -106,50 +106,263 @@
         <form
             method="GET"
             action="{{ route('v2.bienes.index') }}"
-            class="flex flex-col gap-3 sm:flex-row"
+            class="space-y-4"
         >
-            <div class="relative flex-1">
-                <svg
-                    class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
-                    />
-                </svg>
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
 
-                <input
-                    type="search"
-                    name="buscar"
-                    value="{{ $busqueda }}"
-                    placeholder="Buscar por código, serie, descripción, marca o responsable"
-                    class="w-full rounded-2xl border border-slate-200 bg-slate-50 py-3 pl-12 pr-4 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
-                >
+                <div class="xl:col-span-2">
+                    <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-400">
+                        Buscar
+                    </label>
+
+                    <div class="relative">
+                        <svg
+                            class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
+                            />
+                        </svg>
+
+                        <input
+                            type="search"
+                            name="buscar"
+                            value="{{ $busqueda }}"
+                            placeholder="Código, serie, nombre, marca, modelo o responsable"
+                            class="w-full rounded-2xl border border-slate-200 bg-slate-50 py-3 pl-12 pr-4 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
+                        >
+                    </div>
+                </div>
+
+                <div>
+                    <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-400">
+                        Tipo de registro
+                    </label>
+
+                    <select
+                        name="tipo"
+                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
+                    >
+                        <option
+                            value="todos"
+                            @selected($filtros['tipo'] === 'todos')
+                        >
+                            Todos
+                        </option>
+
+                        <option
+                            value="unidades"
+                            @selected($filtros['tipo'] === 'unidades')
+                        >
+                            Unidades individuales
+                        </option>
+
+                        <option
+                            value="lotes"
+                            @selected($filtros['tipo'] === 'lotes')
+                        >
+                            Lotes
+                        </option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-400">
+                        Categoría
+                    </label>
+
+                    <select
+                        name="categoria_id"
+                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
+                    >
+                        <option value="">Todas las categorías</option>
+
+                        @foreach ($categorias as $categoria)
+                            <option
+                                value="{{ $categoria->id }}"
+                                @selected(
+                                    $filtros['categoria_id'] === $categoria->id
+                                )
+                            >
+                                {{ $categoria->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-400">
+                        Área
+                    </label>
+
+                    <select
+                        name="area_id"
+                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
+                    >
+                        <option value="">Todas las áreas</option>
+
+                        @foreach ($areas as $area)
+                            <option
+                                value="{{ $area->id }}"
+                                @selected(
+                                    $filtros['area_id'] === $area->id
+                                )
+                            >
+                                {{ $area->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-400">
+                        Ubicación
+                    </label>
+
+                    <select
+                        name="ubicacion_id"
+                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
+                    >
+                        <option value="">Todas las ubicaciones</option>
+
+                        @foreach ($ubicaciones as $ubicacion)
+                            <option
+                                value="{{ $ubicacion->id }}"
+                                @selected(
+                                    $filtros['ubicacion_id'] === $ubicacion->id
+                                )
+                            >
+                                {{ $ubicacion->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-400">
+                        Conservación
+                    </label>
+
+                    <select
+                        name="estado_conservacion_id"
+                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
+                    >
+                        <option value="">Todos los estados</option>
+
+                        @foreach ($estadosConservacion as $estado)
+                            <option
+                                value="{{ $estado->id }}"
+                                @selected(
+                                    $filtros['estado_conservacion_id']
+                                    === $estado->id
+                                )
+                            >
+                                {{ $estado->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-400">
+                        Situación
+                    </label>
+
+                    <select
+                        name="situacion"
+                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
+                    >
+                        <option value="">Todas las situaciones</option>
+
+                        <option
+                            value="disponible"
+                            @selected($filtros['situacion'] === 'disponible')
+                        >
+                            Disponible
+                        </option>
+
+                        <option
+                            value="asignado"
+                            @selected($filtros['situacion'] === 'asignado')
+                        >
+                            Asignado
+                        </option>
+
+                        <option
+                            value="prestado"
+                            @selected($filtros['situacion'] === 'prestado')
+                        >
+                            Prestado
+                        </option>
+
+                        <option
+                            value="en_mantenimiento"
+                            @selected(
+                                $filtros['situacion'] === 'en_mantenimiento'
+                            )
+                        >
+                            En mantenimiento
+                        </option>
+
+                        <option
+                            value="no_encontrado"
+                            @selected(
+                                $filtros['situacion'] === 'no_encontrado'
+                            )
+                        >
+                            No encontrado
+                        </option>
+
+                        <option
+                            value="en_proceso_de_baja"
+                            @selected(
+                                $filtros['situacion'] === 'en_proceso_de_baja'
+                            )
+                        >
+                            En proceso de baja
+                        </option>
+
+                        <option
+                            value="dado_de_baja"
+                            @selected(
+                                $filtros['situacion'] === 'dado_de_baja'
+                            )
+                        >
+                            Dado de baja
+                        </option>
+                    </select>
+                </div>
+
             </div>
 
-            <button
-                type="submit"
-                class="rounded-2xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700"
-            >
-                Buscar
-            </button>
+            <div class="flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
+                <div class="text-xs font-semibold text-slate-400">
+                    Los filtros se aplican tanto a unidades como a lotes.
+                </div>
+
+                <div class="flex flex-wrap gap-3">
+                    <a
+                        href="{{ route('v2.bienes.index') }}"
+                        class="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-600 transition hover:bg-slate-50"
+                    >
+                        Limpiar filtros
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700"
+                    >
+                        Aplicar filtros
+                    </button>
+                </div>
+            </div>
         </form>
-
-        @if ($busqueda !== '')
-            <div class="mt-3">
-                <a
-                    href="{{ route('v2.bienes.index') }}"
-                    class="text-sm font-semibold text-blue-600 hover:text-blue-700"
-                >
-                    Limpiar búsqueda
-                </a>
-            </div>
-        @endif
     </div>
 
     {{-- Tabla de unidades --}}

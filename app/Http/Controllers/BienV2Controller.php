@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+
+use App\Models\Area;
+use App\Models\EstadoConservacion;
+use App\Models\Ubicacion;
 use App\Models\Bien;
 use App\Models\Lote;
 use App\Models\UnidadBien;
@@ -17,7 +21,16 @@ class BienV2Controller extends Controller
     {
         $busqueda = trim((string) $request->input('buscar'));
 
-        $unidades = UnidadBien::query()
+        $tipo = (string) $request->input('tipo', 'todos');
+        $categoriaId = $request->integer('categoria_id');
+        $areaId = $request->integer('area_id');
+        $ubicacionId = $request->integer('ubicacion_id');
+        $estadoConservacionId = $request->integer(
+            'estado_conservacion_id'
+        );
+        $situacion = (string) $request->input('situacion');
+
+        $unidadesQuery = UnidadBien::query()
             ->with([
                 'bien.categoria',
                 'area',
@@ -28,45 +41,189 @@ class BienV2Controller extends Controller
             ->when($busqueda !== '', function ($query) use ($busqueda) {
                 $query->where(function ($subquery) use ($busqueda) {
                     $subquery
-                        ->where('codigo_interno', 'like', "%{$busqueda}%")
-                        ->orWhere('codigo_patrimonial', 'like', "%{$busqueda}%")
-                        ->orWhere('numero_serie', 'like', "%{$busqueda}%")
-                        ->orWhere('responsable_nombre', 'like', "%{$busqueda}%")
-                        ->orWhereHas('bien', function ($bienQuery) use ($busqueda) {
-                            $bienQuery
-                                ->where('nombre', 'like', "%{$busqueda}%")
-                                ->orWhere('descripcion', 'like', "%{$busqueda}%")
-                                ->orWhere('marca', 'like', "%{$busqueda}%")
-                                ->orWhere('modelo', 'like', "%{$busqueda}%");
-                        });
+                        ->where(
+                            'codigo_interno',
+                            'like',
+                            "%{$busqueda}%"
+                        )
+                        ->orWhere(
+                            'codigo_patrimonial',
+                            'like',
+                            "%{$busqueda}%"
+                        )
+                        ->orWhere(
+                            'numero_serie',
+                            'like',
+                            "%{$busqueda}%"
+                        )
+                        ->orWhere(
+                            'responsable_nombre',
+                            'like',
+                            "%{$busqueda}%"
+                        )
+                        ->orWhereHas(
+                            'bien',
+                            function ($bienQuery) use ($busqueda) {
+                                $bienQuery
+                                    ->where(
+                                        'nombre',
+                                        'like',
+                                        "%{$busqueda}%"
+                                    )
+                                    ->orWhere(
+                                        'descripcion',
+                                        'like',
+                                        "%{$busqueda}%"
+                                    )
+                                    ->orWhere(
+                                        'marca',
+                                        'like',
+                                        "%{$busqueda}%"
+                                    )
+                                    ->orWhere(
+                                        'modelo',
+                                        'like',
+                                        "%{$busqueda}%"
+                                    );
+                            }
+                        );
                 });
             })
+            ->when(
+                $categoriaId > 0,
+                fn ($query) => $query->whereHas(
+                    'bien',
+                    fn ($bienQuery) => $bienQuery->where(
+                        'categoria_id',
+                        $categoriaId
+                    )
+                )
+            )
+            ->when(
+                $areaId > 0,
+                fn ($query) => $query->where('area_id', $areaId)
+            )
+            ->when(
+                $ubicacionId > 0,
+                fn ($query) => $query->where(
+                    'ubicacion_id',
+                    $ubicacionId
+                )
+            )
+            ->when(
+                $estadoConservacionId > 0,
+                fn ($query) => $query->where(
+                    'estado_conservacion_id',
+                    $estadoConservacionId
+                )
+            )
+            ->when(
+                $situacion !== '',
+                fn ($query) => $query->where(
+                    'situacion',
+                    $situacion
+                )
+            );
+
+        $lotesQuery = Lote::query()
+            ->with([
+                'bien.categoria',
+                'area',
+                'ubicacion',
+                'estadoConservacion',
+                'estadoOperatividad',
+            ])
+            ->when($busqueda !== '', function ($query) use ($busqueda) {
+                $query->where(function ($subquery) use ($busqueda) {
+                    $subquery
+                        ->where(
+                            'codigo_interno',
+                            'like',
+                            "%{$busqueda}%"
+                        )
+                        ->orWhere(
+                            'responsable_nombre',
+                            'like',
+                            "%{$busqueda}%"
+                        )
+                        ->orWhereHas(
+                            'bien',
+                            function ($bienQuery) use ($busqueda) {
+                                $bienQuery
+                                    ->where(
+                                        'nombre',
+                                        'like',
+                                        "%{$busqueda}%"
+                                    )
+                                    ->orWhere(
+                                        'descripcion',
+                                        'like',
+                                        "%{$busqueda}%"
+                                    )
+                                    ->orWhere(
+                                        'marca',
+                                        'like',
+                                        "%{$busqueda}%"
+                                    )
+                                    ->orWhere(
+                                        'modelo',
+                                        'like',
+                                        "%{$busqueda}%"
+                                    );
+                            }
+                        );
+                });
+            })
+            ->when(
+                $categoriaId > 0,
+                fn ($query) => $query->whereHas(
+                    'bien',
+                    fn ($bienQuery) => $bienQuery->where(
+                        'categoria_id',
+                        $categoriaId
+                    )
+                )
+            )
+            ->when(
+                $areaId > 0,
+                fn ($query) => $query->where('area_id', $areaId)
+            )
+            ->when(
+                $ubicacionId > 0,
+                fn ($query) => $query->where(
+                    'ubicacion_id',
+                    $ubicacionId
+                )
+            )
+            ->when(
+                $estadoConservacionId > 0,
+                fn ($query) => $query->where(
+                    'estado_conservacion_id',
+                    $estadoConservacionId
+                )
+            )
+            ->when(
+                $situacion !== '',
+                fn ($query) => $query->where(
+                    'situacion',
+                    $situacion
+                )
+            );
+
+        $unidades = $unidadesQuery
+            ->when(
+                $tipo === 'lotes',
+                fn ($query) => $query->whereRaw('1 = 0')
+            )
             ->latest()
             ->paginate(15, ['*'], 'unidades_page')
             ->withQueryString();
 
-        $lotes = Lote::query()
-            ->with([
-                'bien.categoria',
-                'area',
-                'ubicacion',
-                'estadoConservacion',
-                'estadoOperatividad',
-            ])
-            ->when($busqueda !== '', function ($query) use ($busqueda) {
-                $query->where(function ($subquery) use ($busqueda) {
-                    $subquery
-                        ->where('codigo_interno', 'like', "%{$busqueda}%")
-                        ->orWhere('responsable_nombre', 'like', "%{$busqueda}%")
-                        ->orWhereHas('bien', function ($bienQuery) use ($busqueda) {
-                            $bienQuery
-                                ->where('nombre', 'like', "%{$busqueda}%")
-                                ->orWhere('descripcion', 'like', "%{$busqueda}%")
-                                ->orWhere('marca', 'like', "%{$busqueda}%")
-                                ->orWhere('modelo', 'like', "%{$busqueda}%");
-                        });
-                });
-            })
+        $lotes = $lotesQuery
+            ->when(
+                $tipo === 'unidades',
+                fn ($query) => $query->whereRaw('1 = 0')
+            )
             ->latest()
             ->paginate(15, ['*'], 'lotes_page')
             ->withQueryString();
@@ -81,13 +238,49 @@ class BienV2Controller extends Controller
         ];
 
         $resumen['valor_total'] =
-            $resumen['valor_unidades'] + $resumen['valor_lotes'];
+            $resumen['valor_unidades']
+            + $resumen['valor_lotes'];
+
+        $categorias = Categoria::query()
+            ->where('activo', true)
+            ->orderBy('nombre')
+            ->get();
+
+        $areas = Area::query()
+            ->where('activo', true)
+            ->orderBy('nombre')
+            ->get();
+
+        $ubicaciones = Ubicacion::query()
+            ->where('activo', true)
+            ->orderBy('nombre')
+            ->get();
+
+        $estadosConservacion = EstadoConservacion::query()
+            ->where('activo', true)
+            ->orderBy('orden')
+            ->get();
+
+        $filtros = [
+            'tipo' => $tipo,
+            'categoria_id' => $categoriaId,
+            'area_id' => $areaId,
+            'ubicacion_id' => $ubicacionId,
+            'estado_conservacion_id' =>
+                $estadoConservacionId,
+            'situacion' => $situacion,
+        ];
 
         return view('v2.bienes.index', compact(
             'unidades',
             'lotes',
             'resumen',
-            'busqueda'
+            'busqueda',
+            'categorias',
+            'areas',
+            'ubicaciones',
+            'estadosConservacion',
+            'filtros'
         ));
     }
 
