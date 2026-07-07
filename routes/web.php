@@ -37,6 +37,12 @@ Route::middleware(['auth'])->prefix('v2')->name('v2.')->group(function () {
 
     Route::post('/lotes', [LoteV2Controller::class, 'store'])
         ->name('lotes.store');
+    
+    Route::get('/bienes/{bien}/editar', [BienV2Controller::class, 'edit'])
+        ->name('bienes.edit');
+
+    Route::put('/bienes/{bien}', [BienV2Controller::class, 'update'])
+        ->name('bienes.update');
 
     Route::get('/unidades/{unidad}/editar', [UnidadBienV2Controller::class, 'edit'])
         ->name('unidades.edit');

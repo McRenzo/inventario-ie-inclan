@@ -203,6 +203,13 @@
                                         ($unidad->bien?->modelo ?? '')
                                     ) ?: 'Sin marca o modelo' }}
                                 </p>
+
+                                <a
+                                    href="{{ route('v2.bienes.edit', $unidad->bien) }}"
+                                    class="mt-2 inline-flex text-xs font-bold text-blue-600 hover:text-blue-800"
+                                >
+                                    Editar ficha
+                                </a>
                             </td>
 
                             <td class="whitespace-nowrap px-5 py-4 text-slate-600">
@@ -302,6 +309,12 @@
                                 <p class="font-bold text-slate-900">
                                     {{ $lote->bien?->nombre ?? 'Sin ficha' }}
                                 </p>
+                                <a
+                                    href="{{ route('v2.bienes.edit', $lote->bien) }}"
+                                    class="mt-2 inline-flex text-xs font-bold text-blue-600 hover:text-blue-800"
+                                >
+                                    Editar ficha
+                                </a>
                             </td>
 
                             <td class="whitespace-nowrap px-5 py-4 text-slate-600">
