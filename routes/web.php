@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BienController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BienV2Controller;
 
 // Ruta Raíz
 Route::get('/', function () {
@@ -10,6 +11,11 @@ Route::get('/', function () {
         return redirect()->route('dashboard');
     }
     return view('auth.login');
+});
+
+Route::middleware(['auth'])->prefix('v2')->name('v2.')->group(function () {
+    Route::get('/bienes', [BienV2Controller::class, 'index'])
+        ->name('bienes.index');
 });
 
 // Bloque de rutas protegidas

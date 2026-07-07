@@ -44,9 +44,28 @@
                             </div>
                         </a>
 
-                        <a href="{{ route('bienes.index') }}" class="flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200 group {{ Request::is('bienes*') ? 'bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/20' : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900' }}">
+                        <a
+                            href="{{ route('v2.bienes.index') }}"
+                            class="flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200 group
+                            {{ Request::is('bienes*') || Request::is('v2/bienes*')
+                                ? 'bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/20'
+                                : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900' }}"
+                        >
                             <div class="flex items-center space-x-3">
-                                <svg class="w-4 h-4 transition-transform group-hover:scale-105" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                                <svg
+                                    class="w-4 h-4 transition-transform group-hover:scale-105"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                                    />
+                                </svg>
+
                                 <span>Inventario</span>
                             </div>
                         </a>
@@ -133,7 +152,7 @@
 
             <main class="py-6 pb-24 flex-1">
                 <div class="animate-fade-in">
-                    {{ $slot }}
+                    @yield('content')
                 </div>
             </main>
 
