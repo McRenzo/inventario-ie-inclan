@@ -16,6 +16,34 @@ use Illuminate\View\View;
 
 class PrestamoV2Controller extends Controller
 {
+    public function index(Request $request): View
+    {
+        $estado = $request->string('estado')->toString();
+
+        $prestamos = Prestamo::query()
+            ->with([
+                'unidad.bien',
+                'lote.bien',
+            ])
+            ->when(
+                in_array($estado, [
+                    'activo',
+                    'devuelto',
+                    'vencido',
+                    'cancelado',
+                ], true),
+                fn ($query) => $query->where('estado', $estado)
+            )
+            ->latest('fecha_prestamo')
+            ->paginate(15)
+            ->withQueryString();
+
+        return view(
+            'v2.prestamos.index',
+            compact('prestamos', 'estado')
+        );
+    }
+
     public function createUnidad(UnidadBien $unidad): View
     {
         $unidad->load([

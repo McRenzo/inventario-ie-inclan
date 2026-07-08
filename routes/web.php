@@ -38,6 +38,9 @@ Route::middleware(['auth'])->prefix('v2')->name('v2.')->group(function () {
     Route::post('/prestamos', [PrestamoV2Controller::class, 'store'])
         ->name('prestamos.store');
 
+    Route::get('/prestamos', [PrestamoV2Controller::class, 'index'])
+        ->name('prestamos.index');
+
     Route::get('/prestamos/{prestamo}', [PrestamoV2Controller::class, 'show'])
         ->name('prestamos.show');
 

@@ -69,7 +69,39 @@
                                 <span>Inventario</span>
                             </div>
                         </a>
-                    </div>
+
+                        <a
+                            href="{{ route('v2.prestamos.index') }}"
+                            class="flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200 group
+                                {{ request()->routeIs('v2.prestamos.*')
+                                    ? 'bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/20'
+                                    : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900' }}"
+                        >
+                            <div class="flex items-center space-x-3">
+                                <svg
+                                    class="w-4 h-4 transition-transform group-hover:scale-105"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M8 7V5a4 4 0 0 1 8 0v2M5 7h14l-1 13H6L5 7Z"
+                                    />
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M9 11h6"
+                                    />
+                                </svg>
+
+                                <span>Préstamos</span>
+                            </div>
+                        </a>
+                                            </div>
 
                     <div class="space-y-1">
                         <p class="px-3 pb-1 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Operaciones</p>
