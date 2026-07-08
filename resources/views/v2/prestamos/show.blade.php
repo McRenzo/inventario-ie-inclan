@@ -59,9 +59,11 @@
                     <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                         <div>
                             <span class="inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide
-                                {{ $prestamo->estado === 'activo'
-                                    ? 'bg-amber-50 text-amber-700'
-                                    : 'bg-emerald-50 text-emerald-700' }}"
+                                {{ $prestamo->estado === 'devuelto'
+                                    ? 'bg-emerald-50 text-emerald-700'
+                                    : ($prestamo->estado === 'vencido'
+                                        ? 'bg-red-50 text-red-700'
+                                        : 'bg-amber-50 text-amber-700') }}"
                             >
                                 {{ ucfirst($prestamo->estado) }}
                             </span>
@@ -260,7 +262,7 @@
                     </div>
                 </div>
 
-                @if ($prestamo->estado === 'activo')
+                @if (in_array($prestamo->estado, ['activo', 'vencido'], true))
                     <div class="rounded-2xl border border-blue-200 bg-blue-50 p-6">
                         <h2 class="text-lg font-bold text-slate-900">
                             Registrar devolución

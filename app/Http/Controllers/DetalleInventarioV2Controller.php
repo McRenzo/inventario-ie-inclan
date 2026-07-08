@@ -35,7 +35,16 @@ class DetalleInventarioV2Controller extends Controller
             },
         ]);
 
-        return view('v2.detalles.unidad', compact('unidad'));
+        $prestamoActivo = \App\Models\Prestamo::query()
+            ->where('unidad_bien_id', $unidad->id)
+            ->whereIn('estado', ['activo', 'vencido'])
+            ->latest('fecha_prestamo')
+            ->first();
+
+        return view(
+            'v2.detalles.unidad',
+            compact('unidad', 'prestamoActivo')
+        );
     }
 
     public function lote(Lote $lote): View

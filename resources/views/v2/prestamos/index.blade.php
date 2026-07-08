@@ -31,48 +31,192 @@
             </div>
         @endif
 
-        <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            <div class="flex flex-wrap gap-2">
-                <a
-                    href="{{ route('v2.prestamos.index') }}"
-                    class="rounded-xl px-4 py-2 text-sm font-semibold
-                        {{ $estado === ''
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}"
-                >
-                    Todos
-                </a>
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <form
+                method="GET"
+                action="{{ route('v2.prestamos.index') }}"
+                class="space-y-4"
+            >
+                <div class="grid gap-4 lg:grid-cols-12">
+                    <div class="lg:col-span-5">
+                        <label
+                            for="buscar"
+                            class="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-500"
+                        >
+                            Buscar
+                        </label>
 
-                <a
-                    href="{{ route('v2.prestamos.index', ['estado' => 'activo']) }}"
-                    class="rounded-xl px-4 py-2 text-sm font-semibold
-                        {{ $estado === 'activo'
-                            ? 'bg-amber-500 text-white'
-                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}"
-                >
-                    Activos
-                </a>
+                        <input
+                            id="buscar"
+                            type="search"
+                            name="buscar"
+                            value="{{ $buscar }}"
+                            placeholder="Código, receptor, DNI o bien"
+                            class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                        >
+                    </div>
 
-                <a
-                    href="{{ route('v2.prestamos.index', ['estado' => 'devuelto']) }}"
-                    class="rounded-xl px-4 py-2 text-sm font-semibold
-                        {{ $estado === 'devuelto'
-                            ? 'bg-emerald-600 text-white'
-                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}"
-                >
-                    Devueltos
-                </a>
+                    <div class="lg:col-span-3">
+                        <label
+                            for="estado"
+                            class="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-500"
+                        >
+                            Estado
+                        </label>
 
-                <a
-                    href="{{ route('v2.prestamos.index', ['estado' => 'vencido']) }}"
-                    class="rounded-xl px-4 py-2 text-sm font-semibold
-                        {{ $estado === 'vencido'
-                            ? 'bg-red-600 text-white'
-                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}"
-                >
-                    Vencidos
-                </a>
-            </div>
+                        <select
+                            id="estado"
+                            name="estado"
+                            class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                        >
+                            <option value="">
+                                Todos los estados
+                            </option>
+
+                            <option
+                                value="activo"
+                                @selected($estado === 'activo')
+                            >
+                                Activos
+                            </option>
+
+                            <option
+                                value="vencido"
+                                @selected($estado === 'vencido')
+                            >
+                                Vencidos
+                            </option>
+
+                            <option
+                                value="devuelto"
+                                @selected($estado === 'devuelto')
+                            >
+                                Devueltos
+                            </option>
+
+                            <option
+                                value="cancelado"
+                                @selected($estado === 'cancelado')
+                            >
+                                Cancelados
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="lg:col-span-2">
+                        <label
+                            for="fecha_desde"
+                            class="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-500"
+                        >
+                            Desde
+                        </label>
+
+                        <input
+                            id="fecha_desde"
+                            type="date"
+                            name="fecha_desde"
+                            value="{{ $fechaDesde }}"
+                            class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                        >
+                    </div>
+
+                    <div class="lg:col-span-2">
+                        <label
+                            for="fecha_hasta"
+                            class="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-500"
+                        >
+                            Hasta
+                        </label>
+
+                        <input
+                            id="fecha_hasta"
+                            type="date"
+                            name="fecha_hasta"
+                            value="{{ $fechaHasta }}"
+                            class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                        >
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div class="flex flex-wrap gap-2">
+                        <a
+                            href="{{ route('v2.prestamos.index') }}"
+                            class="rounded-xl px-4 py-2 text-xs font-bold transition
+                                {{ $estado === ''
+                                    && $buscar === ''
+                                    && $fechaDesde === ''
+                                    && $fechaHasta === ''
+                                        ? 'bg-blue-600 text-white'
+                                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}"
+                        >
+                            Todos
+                        </a>
+
+                        <a
+                            href="{{ route('v2.prestamos.index', ['estado' => 'activo']) }}"
+                            class="rounded-xl px-4 py-2 text-xs font-bold transition
+                                {{ $estado === 'activo'
+                                    ? 'bg-amber-500 text-white'
+                                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}"
+                        >
+                            Activos
+                        </a>
+
+                        <a
+                            href="{{ route('v2.prestamos.index', ['estado' => 'vencido']) }}"
+                            class="rounded-xl px-4 py-2 text-xs font-bold transition
+                                {{ $estado === 'vencido'
+                                    ? 'bg-red-600 text-white'
+                                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}"
+                        >
+                            Vencidos
+                        </a>
+
+                        <a
+                            href="{{ route('v2.prestamos.index', ['estado' => 'devuelto']) }}"
+                            class="rounded-xl px-4 py-2 text-xs font-bold transition
+                                {{ $estado === 'devuelto'
+                                    ? 'bg-emerald-600 text-white'
+                                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}"
+                        >
+                            Devueltos
+                        </a>
+                    </div>
+
+                    <div class="flex gap-2">
+                        @if (
+                            $buscar !== ''
+                            || $estado !== ''
+                            || $fechaDesde !== ''
+                            || $fechaHasta !== ''
+                        )
+                            <a
+                                href="{{ route('v2.prestamos.index') }}"
+                                class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-600 transition hover:bg-slate-50"
+                            >
+                                Limpiar
+                            </a>
+                        @endif
+
+                        <button
+                            type="submit"
+                            class="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700"
+                        >
+                            Buscar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="flex items-center justify-between">
+            <p class="text-sm text-slate-500">
+                {{ $prestamos->total() }}
+                {{ $prestamos->total() === 1
+                    ? 'préstamo encontrado'
+                    : 'préstamos encontrados' }}
+            </p>
         </div>
 
         <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -168,14 +312,17 @@
                                         <span class="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
                                             Devuelto
                                         </span>
-                                    @elseif ($estaVencido)
+
+                                    @elseif ($prestamo->estado === 'vencido' || $estaVencido)
                                         <span class="inline-flex rounded-full bg-red-50 px-3 py-1 text-xs font-bold text-red-700">
                                             Vencido
                                         </span>
+
                                     @elseif ($prestamo->estado === 'activo')
                                         <span class="inline-flex rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">
                                             Activo
                                         </span>
+
                                     @else
                                         <span class="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">
                                             {{ ucfirst($prestamo->estado) }}
@@ -188,7 +335,7 @@
                                         href="{{ route('v2.prestamos.show', $prestamo) }}"
                                         class="inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-blue-700"
                                     >
-                                        {{ $prestamo->estado === 'activo'
+                                        {{ in_array($prestamo->estado, ['activo', 'vencido'], true)
                                             ? 'Registrar devolución'
                                             : 'Ver detalle' }}
                                     </a>

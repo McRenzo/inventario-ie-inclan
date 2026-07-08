@@ -18,13 +18,87 @@ class PrestamoV2Controller extends Controller
 {
     public function index(Request $request): View
     {
+        Prestamo::query()
+            ->where('estado', 'activo')
+            ->whereNotNull('fecha_devolucion_prevista')
+            ->where('fecha_devolucion_prevista', '<', now())
+            ->update([
+                'estado' => 'vencido',
+            ]);
+
+        $buscar = trim($request->string('buscar')->toString());
         $estado = $request->string('estado')->toString();
+        $fechaDesde = $request->string('fecha_desde')->toString();
+        $fechaHasta = $request->string('fecha_hasta')->toString();
 
         $prestamos = Prestamo::query()
             ->with([
                 'unidad.bien',
                 'lote.bien',
             ])
+
+            ->when(
+                $buscar !== '',
+                function ($query) use ($buscar) {
+                    $query->where(function ($subquery) use ($buscar) {
+                        $subquery
+                            ->where('codigo', 'like', "%{$buscar}%")
+                            ->orWhere(
+                                'receptor_nombre',
+                                'like',
+                                "%{$buscar}%"
+                            )
+                            ->orWhere(
+                                'receptor_dni',
+                                'like',
+                                "%{$buscar}%"
+                            )
+                            ->orWhereHas(
+                                'unidad',
+                                function ($unidadQuery) use ($buscar) {
+                                    $unidadQuery
+                                        ->where(
+                                            'codigo_interno',
+                                            'like',
+                                            "%{$buscar}%"
+                                        )
+                                        ->orWhereHas(
+                                            'bien',
+                                            function ($bienQuery) use ($buscar) {
+                                                $bienQuery->where(
+                                                    'nombre',
+                                                    'like',
+                                                    "%{$buscar}%"
+                                                );
+                                            }
+                                        );
+                                }
+                            )
+                            ->orWhereHas(
+                                'lote',
+                                function ($loteQuery) use ($buscar) {
+                                    $loteQuery
+                                        ->where(
+                                            'codigo_interno',
+                                            'like',
+                                            "%{$buscar}%"
+                                        )
+                                        ->orWhereHas(
+                                            'bien',
+                                            function ($bienQuery) use ($buscar) {
+                                                $bienQuery->where(
+                                                    'nombre',
+                                                    'like',
+                                                    "%{$buscar}%"
+                                                );
+                                            }
+                                        );
+                                }
+                            );
+                    });
+                }
+            )
+
             ->when(
                 in_array($estado, [
                     'activo',
@@ -32,15 +106,55 @@ class PrestamoV2Controller extends Controller
                     'vencido',
                     'cancelado',
                 ], true),
-                fn ($query) => $query->where('estado', $estado)
+                function ($query) use ($estado) {
+                    if ($estado === 'vencido') {
+                        $query
+                            ->whereIn('estado', ['activo', 'vencido'])
+                            ->whereNotNull('fecha_devolucion_prevista')
+                            ->where(
+                                'fecha_devolucion_prevista',
+                                '<',
+                                now()
+                            );
+
+                        return;
+                    }
+
+                    $query->where('estado', $estado);
+                }
             )
+
+            ->when(
+                $fechaDesde !== '',
+                fn ($query) => $query->whereDate(
+                    'fecha_prestamo',
+                    '>=',
+                    $fechaDesde
+                )
+            )
+
+            ->when(
+                $fechaHasta !== '',
+                fn ($query) => $query->whereDate(
+                    'fecha_prestamo',
+                    '<=',
+                    $fechaHasta
+                )
+            )
+
             ->latest('fecha_prestamo')
             ->paginate(15)
             ->withQueryString();
 
         return view(
             'v2.prestamos.index',
-            compact('prestamos', 'estado')
+            compact(
+                'prestamos',
+                'buscar',
+                'estado',
+                'fechaDesde',
+                'fechaHasta'
+            )
         );
     }
 
@@ -258,7 +372,7 @@ class PrestamoV2Controller extends Controller
                 ->lockForUpdate()
                 ->findOrFail($prestamo->id);
 
-            if ($prestamo->estado !== 'activo') {
+            if (!in_array($prestamo->estado, ['activo', 'vencido'], true)) {
                 throw ValidationException::withMessages([
                     'prestamo' =>
                         'Este préstamo ya fue devuelto, cancelado o cerrado.',

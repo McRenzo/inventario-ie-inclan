@@ -33,6 +33,16 @@
                 >
                     Nuevo préstamo
                 </a>
+            @elseif (
+                $unidad->situacion === 'prestado'
+                && $prestamoActivo
+            )
+                <a
+                    href="{{ route('v2.prestamos.show', $prestamoActivo) }}"
+                    class="inline-flex items-center justify-center rounded-xl bg-amber-100 px-4 py-2.5 text-sm font-bold text-amber-700 transition hover:bg-amber-200"
+                >
+                    Ver préstamo activo
+                </a>
             @elseif ($unidad->situacion === 'prestado')
                 <span
                     class="inline-flex cursor-not-allowed items-center justify-center rounded-xl bg-amber-100 px-4 py-2.5 text-sm font-bold text-amber-700"
