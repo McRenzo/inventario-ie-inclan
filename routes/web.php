@@ -47,6 +47,9 @@ Route::middleware(['auth'])->prefix('v2')->name('v2.')->group(function () {
     Route::put('/prestamos/{prestamo}/devolver', [PrestamoV2Controller::class, 'devolver'])
         ->name('prestamos.devolver');
 
+    Route::put('/prestamos/{prestamo}/cancelar', [PrestamoV2Controller::class, 'cancelar'])
+        ->name('prestamos.cancelar');
+
     Route::get('/unidades/crear', [UnidadBienV2Controller::class, 'create'])
         ->name('unidades.create');
 

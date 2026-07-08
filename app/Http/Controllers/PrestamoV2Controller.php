@@ -410,6 +410,200 @@ class PrestamoV2Controller extends Controller
             );
     }
 
+    public function cancelar(
+            Request $request,
+            Prestamo $prestamo
+        ): RedirectResponse {
+            $datos = $request->validate([
+                'motivo_cancelacion' => [
+                    'required',
+                    'string',
+                    'min:5',
+                    'max:1000',
+                ],
+            ]);
+
+            DB::transaction(function () use ($prestamo, $datos) {
+                $prestamo = Prestamo::query()
+                    ->lockForUpdate()
+                    ->findOrFail($prestamo->id);
+
+                if (!in_array(
+                    $prestamo->estado,
+                    ['activo', 'vencido'],
+                    true
+                )) {
+                    throw ValidationException::withMessages([
+                        'prestamo' =>
+                            'Solo se pueden cancelar préstamos activos o vencidos.',
+                    ]);
+                }
+
+                if ($prestamo->unidad_bien_id) {
+                    $this->cancelarPrestamoUnidad(
+                        $prestamo,
+                        $datos['motivo_cancelacion']
+                    );
+                } else {
+                    $this->cancelarPrestamoLote(
+                        $prestamo,
+                        $datos['motivo_cancelacion']
+                    );
+                }
+
+                $prestamo->update([
+                    'estado' => 'cancelado',
+
+                    'observaciones_devolucion' =>
+                        'Préstamo cancelado. Motivo: '
+                        . $datos['motivo_cancelacion'],
+
+                    'devuelto_por' => auth()->id(),
+                ]);
+            });
+
+            return redirect()
+                ->route('v2.prestamos.show', $prestamo)
+                ->with(
+                    'success',
+                    "El préstamo {$prestamo->codigo} fue cancelado correctamente."
+                );
+        }
+
+        private function cancelarPrestamoUnidad(
+        Prestamo $prestamo,
+        string $motivo
+    ): void {
+        $unidad = UnidadBien::query()
+            ->lockForUpdate()
+            ->findOrFail($prestamo->unidad_bien_id);
+
+        $situacionAnterior = $unidad->situacion;
+
+        $unidad->update([
+            'situacion' => 'disponible',
+        ]);
+
+        Movimiento::create([
+            'unidad_bien_id' => $unidad->id,
+            'lote_id' => null,
+            'tipo' => 'correccion',
+            'fecha_movimiento' => now(),
+            'cantidad' => 1,
+
+            'area_anterior_id' => $unidad->area_id,
+            'area_nueva_id' => $unidad->area_id,
+
+            'ubicacion_anterior_id' => $unidad->ubicacion_id,
+            'ubicacion_nueva_id' => $unidad->ubicacion_id,
+
+            'estado_conservacion_anterior_id' =>
+                $unidad->estado_conservacion_id,
+
+            'estado_conservacion_nuevo_id' =>
+                $unidad->estado_conservacion_id,
+
+            'estado_operatividad_anterior_id' =>
+                $unidad->estado_operatividad_id,
+
+            'estado_operatividad_nuevo_id' =>
+                $unidad->estado_operatividad_id,
+
+            'situacion_anterior' => $situacionAnterior,
+            'situacion_nueva' => 'disponible',
+
+            'responsable_anterior_nombre' =>
+                $prestamo->receptor_nombre,
+
+            'responsable_anterior_dni' =>
+                $prestamo->receptor_dni,
+
+            'responsable_nuevo_nombre' =>
+                $unidad->responsable_nombre,
+
+            'responsable_nuevo_dni' =>
+                $unidad->responsable_dni,
+
+            'observacion' =>
+                "Cancelación del préstamo {$prestamo->codigo}. "
+                . "Motivo: {$motivo}",
+
+            'documento_referencia' => $prestamo->codigo,
+            'usuario_id' => auth()->id(),
+        ]);
+    }
+
+    private function cancelarPrestamoLote(
+        Prestamo $prestamo,
+        string $motivo
+    ): void {
+        $lote = Lote::query()
+            ->lockForUpdate()
+            ->findOrFail($prestamo->lote_id);
+
+        $situacionAnterior = $lote->situacion;
+        $cantidadCancelada = (float) $prestamo->cantidad;
+
+        $nuevaCantidad = round(
+            (float) $lote->cantidad_actual + $cantidadCancelada,
+            2
+        );
+
+        $lote->update([
+            'cantidad_actual' => $nuevaCantidad,
+            'situacion' => 'disponible',
+        ]);
+
+        Movimiento::create([
+            'unidad_bien_id' => null,
+            'lote_id' => $lote->id,
+            'tipo' => 'correccion',
+            'fecha_movimiento' => now(),
+            'cantidad' => $cantidadCancelada,
+
+            'area_anterior_id' => $lote->area_id,
+            'area_nueva_id' => $lote->area_id,
+
+            'ubicacion_anterior_id' => $lote->ubicacion_id,
+            'ubicacion_nueva_id' => $lote->ubicacion_id,
+
+            'estado_conservacion_anterior_id' =>
+                $lote->estado_conservacion_id,
+
+            'estado_conservacion_nuevo_id' =>
+                $lote->estado_conservacion_id,
+
+            'estado_operatividad_anterior_id' =>
+                $lote->estado_operatividad_id,
+
+            'estado_operatividad_nuevo_id' =>
+                $lote->estado_operatividad_id,
+
+            'situacion_anterior' => $situacionAnterior,
+            'situacion_nueva' => 'disponible',
+
+            'responsable_anterior_nombre' =>
+                $prestamo->receptor_nombre,
+
+            'responsable_anterior_dni' =>
+                $prestamo->receptor_dni,
+
+            'responsable_nuevo_nombre' =>
+                $lote->responsable_nombre,
+
+            'responsable_nuevo_dni' =>
+                $lote->responsable_dni,
+
+            'observacion' =>
+                "Cancelación del préstamo {$prestamo->codigo}. "
+                . "Cantidad restituida: {$cantidadCancelada} "
+                . "{$lote->unidad_medida}. Motivo: {$motivo}",
+
+            'documento_referencia' => $prestamo->codigo,
+            'usuario_id' => auth()->id(),
+        ]);
+    }
+
     private function registrarPrestamoUnidad(array $datos): Prestamo
     {
         $unidad = UnidadBien::query()

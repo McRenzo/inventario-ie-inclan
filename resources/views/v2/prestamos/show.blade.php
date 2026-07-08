@@ -58,12 +58,18 @@
                 <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                     <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                         <div>
-                            <span class="inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide
-                                {{ $prestamo->estado === 'devuelto'
-                                    ? 'bg-emerald-50 text-emerald-700'
-                                    : ($prestamo->estado === 'vencido'
-                                        ? 'bg-red-50 text-red-700'
-                                        : 'bg-amber-50 text-amber-700') }}"
+                            @php
+                                $claseEstado = match ($prestamo->estado) {
+                                    'activo' => 'bg-amber-50 text-amber-700',
+                                    'vencido' => 'bg-red-50 text-red-700',
+                                    'devuelto' => 'bg-emerald-50 text-emerald-700',
+                                    'cancelado' => 'bg-slate-200 text-slate-700',
+                                    default => 'bg-slate-100 text-slate-600',
+                                };
+                            @endphp
+
+                            <span
+                                class="inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide {{ $claseEstado }}"
                             >
                                 {{ ucfirst($prestamo->estado) }}
                             </span>
@@ -224,14 +230,33 @@
                         </p>
                     </div>
 
-                    @if ($prestamo->estado === 'devuelto')
-                        <div class="mt-5 border-t border-slate-100 pt-5">
-                            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                                Observaciones de devolución
+                    @if (in_array($prestamo->estado, ['activo', 'vencido'], true))
+                        {{-- Aquí están los formularios de devolución y cancelación --}}
+                    @elseif ($prestamo->estado === 'devuelto')
+                        <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-6">
+                            <p class="font-bold text-emerald-800">
+                                Préstamo devuelto
                             </p>
-                            <p class="mt-2 whitespace-pre-line text-sm text-slate-700">
-                                {{ $prestamo->observaciones_devolucion ?: 'Sin observaciones' }}
+
+                            <p class="mt-1 text-sm text-emerald-700">
+                                El bien ya fue reincorporado al inventario.
                             </p>
+                        </div>
+                    @elseif ($prestamo->estado === 'cancelado')
+                        <div class="rounded-2xl border border-slate-200 bg-slate-100 p-6">
+                            <p class="font-bold text-slate-800">
+                                Préstamo cancelado
+                            </p>
+
+                            <p class="mt-1 text-sm text-slate-600">
+                                Este préstamo fue anulado y el bien o la cantidad fue restituida al inventario.
+                            </p>
+
+                            @if ($prestamo->observaciones_devolucion)
+                                <p class="mt-3 whitespace-pre-line text-sm text-slate-600">
+                                    {{ $prestamo->observaciones_devolucion }}
+                                </p>
+                            @endif
                         </div>
                     @endif
                 </div>
@@ -349,6 +374,62 @@
                                 Confirmar devolución
                             </button>
                         </form>
+
+                        <div class="mt-6 border-t border-blue-200 pt-5">
+                            <details>
+                                <summary
+                                    class="cursor-pointer text-sm font-bold text-red-600"
+                                >
+                                    Cancelar préstamo registrado por error
+                                </summary>
+
+                                <div class="mt-4 rounded-xl border border-red-200 bg-red-50 p-4">
+                                    <p class="text-sm text-red-700">
+                                        Esta acción cancelará el préstamo y devolverá el bien
+                                        o la cantidad al inventario.
+                                    </p>
+
+                                    <form
+                                        method="POST"
+                                        action="{{ route('v2.prestamos.cancelar', $prestamo) }}"
+                                        class="mt-4 space-y-4"
+                                        onsubmit="return confirm(
+                                            '¿Confirmas que deseas cancelar este préstamo?'
+                                        )"
+                                    >
+                                        @csrf
+                                        @method('PUT')
+
+                                        <div>
+                                            <label
+                                                for="motivo_cancelacion"
+                                                class="mb-2 block text-sm font-semibold text-red-800"
+                                            >
+                                                Motivo de la cancelación
+                                            </label>
+
+                                            <textarea
+                                                id="motivo_cancelacion"
+                                                name="motivo_cancelacion"
+                                                rows="3"
+                                                required
+                                                minlength="5"
+                                                maxlength="1000"
+                                                placeholder="Ejemplo: El préstamo fue registrado por error."
+                                                class="w-full resize-y rounded-xl border border-red-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-red-500 focus:ring-4 focus:ring-red-100"
+                                            >{{ old('motivo_cancelacion') }}</textarea>
+                                        </div>
+
+                                        <button
+                                            type="submit"
+                                            class="inline-flex w-full items-center justify-center rounded-xl bg-red-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-red-700"
+                                        >
+                                            Confirmar cancelación
+                                        </button>
+                                    </form>
+                                </div>
+                            </details>
+                        </div>
                     </div>
                 @else
                     <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-6">
