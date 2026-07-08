@@ -35,6 +35,17 @@ class DetalleInventarioV2Controller extends Controller
             },
         ]);
 
+        $prestamos = \App\Models\Prestamo::query()
+            ->with([
+                'estadoConservacionSalida',
+                'estadoConservacionDevolucion',
+                'registradoPor',
+                'devueltoPor',
+            ])
+            ->where('unidad_bien_id', $unidad->id)
+            ->latest('fecha_prestamo')
+            ->get();
+        
         $prestamoActivo = \App\Models\Prestamo::query()
             ->where('unidad_bien_id', $unidad->id)
             ->whereIn('estado', ['activo', 'vencido'])
@@ -43,7 +54,11 @@ class DetalleInventarioV2Controller extends Controller
 
         return view(
             'v2.detalles.unidad',
-            compact('unidad', 'prestamoActivo')
+            compact(
+                'unidad',
+                'prestamoActivo',
+                'prestamos'
+            )
         );
     }
 
@@ -74,6 +89,23 @@ class DetalleInventarioV2Controller extends Controller
             },
         ]);
 
-        return view('v2.detalles.lote', compact('lote'));
+        $prestamos = \App\Models\Prestamo::query()
+            ->with([
+                'estadoConservacionSalida',
+                'estadoConservacionDevolucion',
+                'registradoPor',
+                'devueltoPor',
+            ])
+            ->where('lote_id', $lote->id)
+            ->latest('fecha_prestamo')
+            ->get();
+
+        return view(
+            'v2.detalles.lote',
+            compact(
+                'lote',
+                'prestamos'
+            )
+        );
     }
 }

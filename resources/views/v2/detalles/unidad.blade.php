@@ -294,6 +294,117 @@
         </div>
     </div>
 
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <h2 class="text-lg font-bold text-slate-900">
+                    Historial de préstamos
+                </h2>
+
+                <p class="mt-1 text-sm text-slate-500">
+                    Registro de préstamos y devoluciones de esta unidad.
+                </p>
+            </div>
+
+            <span class="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">
+                {{ $prestamos->count() }}
+                {{ $prestamos->count() === 1 ? 'registro' : 'registros' }}
+            </span>
+        </div>
+
+        <div class="mt-5 overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200">
+                <thead class="bg-slate-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
+                            Código
+                        </th>
+
+                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
+                            Receptor
+                        </th>
+
+                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
+                            Fecha
+                        </th>
+
+                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
+                            Estado
+                        </th>
+
+                        <th class="px-4 py-3 text-right text-xs font-bold uppercase tracking-wide text-slate-500">
+                            Acción
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-slate-100">
+                    @forelse ($prestamos as $prestamo)
+                        <tr>
+                            <td class="whitespace-nowrap px-4 py-4">
+                                <span class="font-mono text-sm font-bold text-slate-800">
+                                    {{ $prestamo->codigo }}
+                                </span>
+                            </td>
+
+                            <td class="px-4 py-4">
+                                <p class="text-sm font-semibold text-slate-800">
+                                    {{ $prestamo->receptor_nombre }}
+                                </p>
+
+                                <p class="mt-1 text-xs text-slate-500">
+                                    {{ $prestamo->receptor_dni ?: 'Sin DNI' }}
+                                </p>
+                            </td>
+
+                            <td class="whitespace-nowrap px-4 py-4 text-sm text-slate-700">
+                                {{ $prestamo->fecha_prestamo?->format('d/m/Y H:i') }}
+                            </td>
+
+                            <td class="whitespace-nowrap px-4 py-4">
+                                @if ($prestamo->estado === 'devuelto')
+                                    <span class="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+                                        Devuelto
+                                    </span>
+                                @elseif ($prestamo->estado === 'vencido')
+                                    <span class="inline-flex rounded-full bg-red-50 px-3 py-1 text-xs font-bold text-red-700">
+                                        Vencido
+                                    </span>
+                                @elseif ($prestamo->estado === 'activo')
+                                    <span class="inline-flex rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">
+                                        Activo
+                                    </span>
+                                @else
+                                    <span class="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">
+                                        {{ ucfirst($prestamo->estado) }}
+                                    </span>
+                                @endif
+                            </td>
+
+                            <td class="whitespace-nowrap px-4 py-4 text-right">
+                                <a
+                                    href="{{ route('v2.prestamos.show', $prestamo) }}"
+                                    class="inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-blue-700"
+                                >
+                                    Ver detalle
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td
+                                colspan="5"
+                                class="px-4 py-10 text-center text-sm text-slate-500"
+                            >
+                                Esta unidad todavía no tiene préstamos registrados.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div class="overflow-hidden rounded-3xl border border-slate-200/70 bg-white shadow-sm">
         <div class="border-b border-slate-100 px-6 py-5">
             <h2 class="font-black text-slate-900">
