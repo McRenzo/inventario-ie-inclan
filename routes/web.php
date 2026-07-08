@@ -9,6 +9,7 @@ use App\Http\Controllers\LoteV2Controller;
 use App\Http\Controllers\DetalleInventarioV2Controller;
 use App\Http\Controllers\BusquedaCodigoV2Controller;
 use App\Http\Controllers\EtiquetasQrV2Controller;
+use App\Http\Controllers\PrestamoV2Controller;
 
 // Ruta Raíz
 Route::get('/', function () {
@@ -27,15 +28,30 @@ Route::middleware(['auth'])->prefix('v2')->name('v2.')->group(function () {
 
     Route::post('/bienes', [BienV2Controller::class, 'store'])
         ->name('bienes.store');
+    
+    Route::get('/prestamos/unidades/{unidad}/crear', [PrestamoV2Controller::class, 'createUnidad'])
+        ->name('prestamos.unidades.create');
+
+    Route::get('/prestamos/lotes/{lote}/crear', [PrestamoV2Controller::class, 'createLote'])
+        ->name('prestamos.lotes.create');
+
+    Route::post('/prestamos', [PrestamoV2Controller::class, 'store'])
+        ->name('prestamos.store');
+
+    Route::get('/prestamos/{prestamo}', [PrestamoV2Controller::class, 'show'])
+        ->name('prestamos.show');
+
+    Route::put('/prestamos/{prestamo}/devolver', [PrestamoV2Controller::class, 'devolver'])
+        ->name('prestamos.devolver');
 
     Route::get('/unidades/crear', [UnidadBienV2Controller::class, 'create'])
-    ->name('unidades.create');
+        ->name('unidades.create');
 
     Route::post('/unidades', [UnidadBienV2Controller::class, 'store'])
         ->name('unidades.store');
 
     Route::get('/lotes/crear', [LoteV2Controller::class, 'create'])
-    ->name('lotes.create');
+        ->name('lotes.create');
 
     Route::post('/lotes', [LoteV2Controller::class, 'store'])
         ->name('lotes.store');
