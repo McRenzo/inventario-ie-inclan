@@ -10,6 +10,7 @@ use App\Http\Controllers\DetalleInventarioV2Controller;
 use App\Http\Controllers\BusquedaCodigoV2Controller;
 use App\Http\Controllers\EtiquetasQrV2Controller;
 use App\Http\Controllers\PrestamoV2Controller;
+use App\Http\Controllers\DashboardController;
 
 // Ruta Raíz
 Route::get('/', function () {
@@ -97,22 +98,10 @@ Route::middleware(['auth'])->prefix('v2')->name('v2.')->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     
     // RUTA DASHBOARD UNIFICADA Y CORRECTA
-    Route::get('/dashboard', function () {
-        $user = auth()->user();
-
-        if ($user->role === 'logistica') {
-            $data = [
-                'totalActivos'       => \App\Models\Bien::count(),
-                'activosDisponibles' => \App\Models\Bien::where('estado_actual', 'disponible')->count(),
-                'enMantenimiento'    => \App\Models\Bien::where('estado_actual', 'en_mantenimiento')->count(),
-                'categoriasStats'    => \App\Models\Categoria::withCount('bienes')->get(),
-            ];
-
-            return view('dashboard', compact('data'));
-        }
-
-        return view('soporte.dashboard');
-    })->name('dashboard');
+    Route::get(
+        '/dashboard',
+        [DashboardController::class, 'index']
+    )->name('dashboard');
 
     // Módulo de Bienes
     Route::get('/bienes', [BienController::class, 'index'])->name('bienes.index');
