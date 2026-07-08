@@ -26,6 +26,29 @@
                 Editar lote
             </a>
 
+            @if (
+                (float) $lote->cantidad_actual > 0
+                && !in_array($lote->situacion, [
+                    'en_mantenimiento',
+                    'no_encontrado',
+                    'en_proceso_de_baja',
+                    'dado_de_baja',
+                ], true)
+            )
+                <a
+                    href="{{ route('v2.prestamos.lotes.create', $lote) }}"
+                    class="inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700"
+                >
+                    Nuevo préstamo
+                </a>
+            @else
+                <span
+                    class="inline-flex cursor-not-allowed items-center justify-center rounded-xl bg-slate-200 px-4 py-2.5 text-sm font-bold text-slate-600"
+                >
+                    Sin cantidad disponible
+                </span>
+            @endif
+
             <a
                 href="{{ route('v2.bienes.index') }}"
                 class="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-600 transition hover:bg-slate-50"
