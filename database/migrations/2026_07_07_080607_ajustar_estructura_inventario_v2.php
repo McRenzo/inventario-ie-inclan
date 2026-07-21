@@ -100,15 +100,16 @@ return new class extends Migration
         |--------------------------------------------------------------------------
         */
 
-        DB::statement("
-            ALTER TABLE lotes
-            ADD CONSTRAINT chk_lotes_cantidades
-            CHECK (
-                cantidad_inicial >= 0
-                AND cantidad_actual >= 0
-                AND cantidad_actual <= cantidad_inicial
-            )
-        ");
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement("
+                ALTER TABLE lotes
+                ADD CONSTRAINT chk_lotes_cantidades
+                CHECK (
+                    cantidad_inicial >= 0
+                    AND cantidad_actual >= 0
+                )
+            ");
+        }
 
         
     }
@@ -122,7 +123,12 @@ return new class extends Migration
         */
 
         
-        DB::statement('ALTER TABLE lotes DROP CHECK chk_lotes_cantidades');
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("
+                ALTER TABLE lotes
+                DROP CHECK chk_lotes_cantidades
+            ");
+        }
 
         
         

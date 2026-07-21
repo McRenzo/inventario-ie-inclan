@@ -184,6 +184,14 @@ class PrestamoV2Controller extends Controller
 
     public function createLote(Lote $lote): View
     {
+
+        if ($lote->estado_registro === 'fusionado') {
+            abort(
+                422,
+                'Este lote fue fusionado y no puede prestarse.'
+            );
+        }
+
         $lote->load([
             'bien',
             'area',
@@ -541,6 +549,25 @@ class PrestamoV2Controller extends Controller
             ->lockForUpdate()
             ->findOrFail($prestamo->lote_id);
 
+        if ($lote->estado_registro === 'fusionado') {
+            throw ValidationException::withMessages([
+                'lote_id' =>
+                    'Este lote fue fusionado y no puede prestarse.',
+            ]);
+        }
+
+        if (in_array($lote->situacion, [
+            'en_mantenimiento',
+            'no_encontrado',
+            'en_proceso_de_baja',
+            'dado_de_baja',
+        ], true)) {
+            throw ValidationException::withMessages([
+                'lote_id' =>
+                    'El lote no se encuentra disponible para préstamos.',
+            ]);
+        }
+
         $situacionAnterior = $lote->situacion;
         $cantidadCancelada = (float) $prestamo->cantidad;
 
@@ -683,8 +710,30 @@ class PrestamoV2Controller extends Controller
             ->lockForUpdate()
             ->findOrFail($datos['lote_id']);
 
-        $cantidad = (float) $datos['cantidad'];
-        $disponible = (float) $lote->cantidad_actual;
+        if ($lote->estado_registro === 'fusionado') {
+            throw ValidationException::withMessages([
+                'lote_id' =>
+                    'Este lote fue fusionado y no puede prestarse.',
+            ]);
+        }
+
+        if (in_array($lote->situacion, [
+            'en_mantenimiento',
+            'no_encontrado',
+            'en_proceso_de_baja',
+            'dado_de_baja',
+        ], true)) {
+            throw ValidationException::withMessages([
+                'lote_id' =>
+                    'El lote no se encuentra disponible para préstamos.',
+            ]);
+        }
+
+        $cantidad = round((float) $datos['cantidad'], 2);
+        $disponible = round(
+            (float) $lote->cantidad_actual,
+            2
+        );
 
         if ($cantidad > $disponible) {
             throw ValidationException::withMessages([
@@ -883,23 +932,26 @@ class PrestamoV2Controller extends Controller
     private function validarUnidadDisponible(
         UnidadBien $unidad
     ): void {
-        if ($unidad->situacion !== 'disponible') {
-            abort(
-                422,
-                'La unidad no se encuentra disponible para préstamos.'
-            );
-        }
-
-        $tienePrestamoActivo = Prestamo::query()
+        $tienePrestamoPendiente = Prestamo::query()
             ->where('unidad_bien_id', $unidad->id)
-            ->where('estado', 'activo')
+            ->whereIn('estado', [
+                'activo',
+                'vencido',
+            ])
             ->exists();
 
-        if ($tienePrestamoActivo) {
-            abort(
-                422,
-                'La unidad ya tiene un préstamo activo.'
-            );
+        if ($tienePrestamoPendiente) {
+            throw ValidationException::withMessages([
+                'unidad_bien_id' =>
+                    'La unidad ya tiene un préstamo activo o vencido pendiente de devolución.',
+            ]);
+        }
+
+        if ($unidad->situacion !== 'disponible') {
+            throw ValidationException::withMessages([
+                'unidad_bien_id' =>
+                    'La unidad no se encuentra disponible para préstamos.',
+            ]);
         }
     }
 

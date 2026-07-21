@@ -54,7 +54,7 @@
                 </h2>
 
                 <p class="mt-1 text-xs text-slate-400">
-                    Define el nombre, clasificación y tipo de control.
+                    Define el nombre y el tipo de control del bien.
                 </p>
             </div>
 
@@ -74,29 +74,7 @@
                     >
                 </div>
 
-                <div>
-                    <label class="mb-2 block text-sm font-bold text-slate-700">
-                        Categoría
-                    </label>
-
-                    <select
-                        name="categoria_id"
-                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
-                    >
-                        <option value="">Sin categoría</option>
-
-                        @foreach ($categorias as $categoria)
-                            <option
-                                value="{{ $categoria->id }}"
-                                @selected(old('categoria_id') == $categoria->id)
-                            >
-                                {{ $categoria->nombre }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div>
+                <div class="md:col-span-2">
                     <label class="mb-2 block text-sm font-bold text-slate-700">
                         Tipo de control
                     </label>
@@ -238,33 +216,15 @@
                 <h2 class="font-black text-slate-900">
                     Valorización
                 </h2>
+
+                <p class="mt-1 text-xs text-slate-400">
+                    Configuración opcional para calcular la pérdida de valor del bien.
+                </p>
             </div>
 
             <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
 
-                <div>
-                    <label class="mb-2 block text-sm font-bold text-slate-700">
-                        Fuente de financiamiento
-                    </label>
-
-                    <select
-                        name="fuente_financiamiento_id"
-                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
-                    >
-                        <option value="">Sin registrar</option>
-
-                        @foreach ($fuentes as $fuente)
-                            <option
-                                value="{{ $fuente->id }}"
-                                @selected(old('fuente_financiamiento_id') == $fuente->id)
-                            >
-                                {{ $fuente->nombre }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="flex items-center pt-7">
+                <div class="md:col-span-2">
                     <label class="inline-flex cursor-pointer items-center gap-3">
                         <input
                             type="checkbox"
@@ -278,6 +238,10 @@
                             Este bien es depreciable
                         </span>
                     </label>
+
+                    <p class="mt-2 text-xs text-slate-400">
+                        Marca esta opción solo si deseas controlar la depreciación del bien.
+                    </p>
                 </div>
 
                 <div>
@@ -291,6 +255,7 @@
                         value="{{ old('vida_util_meses') }}"
                         min="1"
                         max="1200"
+                        placeholder="Ejemplo: 60"
                         class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
                     >
                 </div>

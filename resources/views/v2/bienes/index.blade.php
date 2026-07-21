@@ -42,12 +42,28 @@
             >
                 Registrar lote
             </a>
+
+            <a
+                href="{{ route(
+                    'v2.bienes.exportar',
+                    request()->query()
+                ) }}"
+                class="inline-flex items-center justify-center rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-3 text-sm font-bold text-emerald-700 transition hover:bg-emerald-100"
+            >
+                Exportar Excel
+            </a>
         </div>
     </div>
 
     @if (session('success'))
-        <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">
+        <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-700">
             {{ session('success') }}
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">
+            {{ session('error') }}
         </div>
     @endif
 

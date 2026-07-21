@@ -18,35 +18,84 @@
             </p>
         </div>
 
-        <div class="flex flex-wrap gap-3">
-            <a
-                href="{{ route('v2.lotes.edit', $lote) }}"
-                class="inline-flex items-center justify-center rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700"
-            >
-                Editar lote
-            </a>
+        @php
+            $loteUtilizable =
+                $lote->estado_registro !== 'fusionado'
+                && (float) $lote->cantidad_actual > 0;
 
-            @if (
-                (float) $lote->cantidad_actual > 0
-                && !in_array($lote->situacion, [
+            $situacionPrestamoPermitida = !in_array(
+                $lote->situacion,
+                [
                     'en_mantenimiento',
                     'no_encontrado',
                     'en_proceso_de_baja',
                     'dado_de_baja',
-                ], true)
-            )
+                ],
+                true
+            );
+
+            $situacionTransferible = in_array(
+                $lote->situacion,
+                ['disponible', 'asignado'],
+                true
+            );
+        @endphp
+
+        <div class="flex flex-wrap gap-3">
+            @if ($loteUtilizable)
+                <a
+                    href="{{ route('v2.lotes.edit', $lote) }}"
+                    class="inline-flex items-center justify-center rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700"
+                >
+                    Editar lote
+                </a>
+            @endif
+
+            @if ($loteUtilizable && $situacionPrestamoPermitida)
                 <a
                     href="{{ route('v2.prestamos.lotes.create', $lote) }}"
                     class="inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700"
                 >
                     Nuevo préstamo
                 </a>
+            @elseif ($lote->estado_registro === 'fusionado')
+                <span
+                    class="inline-flex cursor-not-allowed items-center justify-center rounded-xl bg-slate-200 px-4 py-2.5 text-sm font-bold text-slate-600"
+                    title="Este lote fue fusionado y ya no puede prestarse"
+                >
+                    Lote fusionado
+                </span>
             @else
                 <span
                     class="inline-flex cursor-not-allowed items-center justify-center rounded-xl bg-slate-200 px-4 py-2.5 text-sm font-bold text-slate-600"
                 >
                     Sin cantidad disponible
                 </span>
+            @endif
+
+            @if ($loteUtilizable && $situacionTransferible)
+                <a
+                    href="{{ route('v2.transferencias.lotes.create', $lote) }}"
+                    class="inline-flex items-center justify-center rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-violet-700"
+                >
+                    Transferir
+                </a>
+            @else
+                <span
+                    class="inline-flex cursor-not-allowed items-center justify-center rounded-xl bg-slate-200 px-4 py-2.5 text-sm font-bold text-slate-500"
+                    title="El lote no está disponible para transferencia"
+                >
+                    No transferible
+                </span>
+            @endif
+
+            @if ($loteUtilizable && $situacionTransferible)
+                <a
+                    href="{{ route('v2.lotes.fusion.create', $lote) }}"
+                    class="inline-flex items-center justify-center rounded-xl border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-bold text-blue-700 transition hover:bg-blue-100"
+                >
+                    Fusionar lote
+                </a>
             @endif
 
             <a
@@ -103,7 +152,7 @@
             </p>
 
             <p class="mt-3 text-lg font-black text-slate-900">
-                S/ {{ number_format((float) ($lote->valor_actual ?? 0), 2) }}
+                S/ {{ number_format((float) ($lote->valor_en_libros ?? 0), 2) }}
             </p>
         </div>
 
@@ -399,7 +448,7 @@
                                 colspan="6"
                                 class="px-4 py-10 text-center text-sm text-slate-500"
                             >
-                                Esta unidad todavía no tiene préstamos registrados.
+                                Este lote todavía no tiene préstamos registrados.
                             </td>
                         </tr>
                     @endforelse

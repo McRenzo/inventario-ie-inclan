@@ -57,6 +57,22 @@
             >
                 Volver al inventario
             </a>
+
+            @if (in_array($unidad->situacion, ['disponible', 'asignado'], true))
+                <a
+                    href="{{ route('v2.transferencias.unidades.create', $unidad) }}"
+                    class="inline-flex items-center justify-center rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-violet-700"
+                >
+                    Transferir
+                </a>
+            @else
+                <span
+                    class="inline-flex cursor-not-allowed items-center justify-center rounded-xl bg-slate-200 px-4 py-2.5 text-sm font-bold text-slate-500"
+                    title="El bien no está disponible para transferencia"
+                >
+                    No transferible
+                </span>
+            @endif
         </div>
 
         @if (session('success'))
@@ -181,13 +197,6 @@
                     <dt class="font-semibold text-slate-400">Modelo</dt>
                     <dd class="text-right font-bold text-slate-900">
                         {{ $unidad->bien?->modelo ?: 'Sin registrar' }}
-                    </dd>
-                </div>
-
-                <div class="flex justify-between gap-4 py-3">
-                    <dt class="font-semibold text-slate-400">Categoría</dt>
-                    <dd class="text-right font-bold text-slate-900">
-                        {{ $unidad->bien?->categoria?->nombre ?? 'Sin categoría' }}
                     </dd>
                 </div>
 

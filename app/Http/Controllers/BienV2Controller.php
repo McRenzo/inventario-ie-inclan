@@ -14,9 +14,37 @@ use Illuminate\View\View;
 use App\Models\Categoria;
 use App\Models\FuenteFinanciamiento;
 use Illuminate\Http\RedirectResponse;
+use App\Exports\InventarioV2Export;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class BienV2Controller extends Controller
 {
+    public function exportarExcel(
+        Request $request
+    ): BinaryFileResponse {
+        $filtros = [
+            'buscar' => $request->input('buscar'),
+            'tipo' => $request->input('tipo', 'todos'),
+            'categoria_id' => $request->input('categoria_id'),
+            'area_id' => $request->input('area_id'),
+            'ubicacion_id' => $request->input('ubicacion_id'),
+            'estado_conservacion_id' =>
+                $request->input('estado_conservacion_id'),
+            'situacion' => $request->input('situacion'),
+        ];
+
+        $nombreArchivo =
+            'inventario_v2_'
+            . now()->format('Y-m-d_H-i-s')
+            . '.xlsx';
+
+        return Excel::download(
+            new InventarioV2Export($filtros),
+            $nombreArchivo
+        );
+    }
+
     public function index(Request $request): View
     {
         $busqueda = trim((string) $request->input('buscar'));
@@ -133,6 +161,8 @@ class BienV2Controller extends Controller
                 'estadoConservacion',
                 'estadoOperatividad',
             ])
+            ->where('estado_registro', 'activo')
+            ->where('cantidad_actual', '>', 0)
             ->when($busqueda !== '', function ($query) use ($busqueda) {
                 $query->where(function ($subquery) use ($busqueda) {
                     $subquery
@@ -231,10 +261,19 @@ class BienV2Controller extends Controller
         $resumen = [
             'fichas' => Bien::where('activo', true)->count(),
             'unidades' => UnidadBien::count(),
-            'lotes' => Lote::count(),
-            'cantidad_lotes' => Lote::sum('cantidad_actual'),
+            'lotes' => Lote::query()
+                ->where('estado_registro', 'activo')
+                ->where('cantidad_actual', '>', 0)
+                ->count(),
+            'cantidad_lotes' => Lote::query()
+                ->where('estado_registro', 'activo')
+                ->where('cantidad_actual', '>', 0)
+                ->sum('cantidad_actual'),
             'valor_unidades' => UnidadBien::sum('valor_en_libros'),
-            'valor_lotes' => Lote::sum('valor_en_libros'),
+            'valor_lotes' => Lote::query()
+                ->where('estado_registro', 'activo')
+                ->where('cantidad_actual', '>', 0)
+                ->sum('valor_en_libros'),
         ];
 
         $resumen['valor_total'] =
@@ -368,11 +407,8 @@ class BienV2Controller extends Controller
         $bien = Bien::create($datos);
 
         return redirect()
-            ->route('v2.bienes.index')
-            ->with(
-                'success',
-                "La ficha «{$bien->nombre}» fue creada correctamente."
-            );
+    ->route('v2.bienes.index')
+    ->with('success', 'Ficha de bien registrada correctamente.');
     }
 
     public function update(

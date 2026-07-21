@@ -11,6 +11,9 @@ use App\Http\Controllers\BusquedaCodigoV2Controller;
 use App\Http\Controllers\EtiquetasQrV2Controller;
 use App\Http\Controllers\PrestamoV2Controller;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TransferenciaV2Controller;
+use App\Http\Controllers\AreaV2Controller;
+use App\Http\Controllers\UbicacionV2Controller;
 
 // Ruta Raíz
 Route::get('/', function () {
@@ -62,6 +65,9 @@ Route::middleware(['auth'])->prefix('v2')->name('v2.')->group(function () {
 
     Route::post('/lotes', [LoteV2Controller::class, 'store'])
         ->name('lotes.store');
+
+    Route::get('/bienes/exportar', [BienV2Controller::class, 'exportarExcel'])
+        ->name('bienes.exportar');
     
     Route::get('/bienes/{bien}/editar', [BienV2Controller::class, 'edit'])
         ->name('bienes.edit');
@@ -92,6 +98,69 @@ Route::middleware(['auth'])->prefix('v2')->name('v2.')->group(function () {
 
     Route::get('/lotes/{lote}', [DetalleInventarioV2Controller::class, 'lote'])
         ->name('lotes.show');
+
+    Route::get('/transferencias/unidades/{unidad}/crear', [TransferenciaV2Controller::class, 'createUnidad'])
+        ->name('transferencias.unidades.create');
+
+    Route::get('/transferencias/lotes/{lote}/crear', [TransferenciaV2Controller::class, 'createLote'])
+        ->name('transferencias.lotes.create');
+
+    Route::post('/transferencias', [TransferenciaV2Controller::class, 'store'])
+        ->name('transferencias.store');
+
+    Route::get('/parametros', function () {
+        return view('v2.parametros.index');
+    })->name('parametros.index');
+
+    Route::get(
+        '/parametros/areas',
+        [AreaV2Controller::class, 'index']
+    )->name('parametros.areas.index');
+
+    Route::post(
+        '/parametros/areas',
+        [AreaV2Controller::class, 'store']
+    )->name('parametros.areas.store');
+
+    Route::put(
+        '/parametros/areas/{area}',
+        [AreaV2Controller::class, 'update']
+    )->name('parametros.areas.update');
+
+    Route::patch(
+        '/parametros/areas/{area}/estado',
+        [AreaV2Controller::class, 'cambiarEstado']
+    )->name('parametros.areas.estado');
+
+    Route::get(
+        '/parametros/ubicaciones',
+        [UbicacionV2Controller::class, 'index']
+    )->name('parametros.ubicaciones.index');
+
+    Route::post(
+        '/parametros/ubicaciones',
+        [UbicacionV2Controller::class, 'store']
+    )->name('parametros.ubicaciones.store');
+
+    Route::put(
+        '/parametros/ubicaciones/{ubicacion}',
+        [UbicacionV2Controller::class, 'update']
+    )->name('parametros.ubicaciones.update');
+
+    Route::patch(
+        '/parametros/ubicaciones/{ubicacion}/estado',
+        [UbicacionV2Controller::class, 'cambiarEstado']
+    )->name('parametros.ubicaciones.estado');
+
+    Route::get(
+        '/lotes/{lote}/fusionar',
+        [TransferenciaV2Controller::class, 'createFusion']
+    )->name('lotes.fusion.create');
+
+    Route::post(
+        '/lotes/{lote}/fusionar',
+        [TransferenciaV2Controller::class, 'storeFusion']
+    )->name('lotes.fusion.store');
 });
 
 // Bloque de rutas protegidas

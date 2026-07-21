@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Prestamo;
 
 class Lote extends Model
 {
@@ -52,6 +53,9 @@ class Lote extends Model
         'foto_principal',
         'observaciones',
         'creado_por',
+        'estado_registro',
+        'fusionado_en_id',
+        'fecha_fusion',
     ];
 
     protected function casts(): array
@@ -71,6 +75,7 @@ class Lote extends Model
             'valor_en_libros' => 'decimal:2',
             'valor_ajustado' => 'decimal:2',
             'fila_origen' => 'integer',
+            'fecha_fusion' => 'datetime',
         ];
     }
 
@@ -146,5 +151,21 @@ class Lote extends Model
     public function getValorActualAttribute()
     {
         return $this->valor_ajustado ?? $this->valor_en_libros;
+    }
+
+    public function fusionadoEn()
+    {
+        return $this->belongsTo(
+            Lote::class,
+            'fusionado_en_id'
+        );
+    }
+
+    public function lotesFusionados()
+    {
+        return $this->hasMany(
+            Lote::class,
+            'fusionado_en_id'
+        );
     }
 }

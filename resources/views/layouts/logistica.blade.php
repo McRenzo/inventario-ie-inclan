@@ -47,7 +47,12 @@
                         <a
                             href="{{ route('v2.bienes.index') }}"
                             class="flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200 group
-                            {{ Request::is('bienes*') || Request::is('v2/bienes*')
+                            {{ request()->routeIs(
+                                'v2.bienes.*',
+                                'v2.unidades.*',
+                                'v2.lotes.*',
+                                'v2.transferencias.*'
+                            )
                                 ? 'bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/20'
                                 : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900' }}"
                         >
@@ -118,31 +123,37 @@
                             <span class="font-bold">Escanear Activo QR</span>
                         </a>
 
-                        <a href="{{ route('bienes.reportes') }}" 
-                            class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-all duration-200 
-                            {{ Request::is('bienes/reportes') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900' }}">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                            </svg>
-                            <span>Reportes Dinámicos</span>
-                        </a>
-
-                        <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-slate-600 hover:bg-slate-100/80 hover:text-slate-900">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.003 9.003 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
-                            <span>Análisis de Datos</span>
-                        </a>
                     </div>
 
                     <div class="space-y-1">
                         <p class="px-3 pb-1 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Ajustes</p>
 
-                        <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-slate-600 hover:bg-slate-100/80 hover:text-slate-900">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                            <span>Control de Accesos</span>
-                        </a>
+                        <a
+                            href="{{ route('v2.parametros.index') }}"
+                            class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-all duration-200 group
+                                {{ request()->routeIs('v2.parametros.*')
+                                    ? 'bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/20'
+                                    : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900' }}"
+                        >
+                            <svg
+                                class="w-4 h-4 transition-transform group-hover:scale-105"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                                />
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                />
+                            </svg>
 
-                        <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-slate-600 hover:bg-slate-100/80 hover:text-slate-900">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                             <span>Parámetros</span>
                         </a>
                     </div>
@@ -175,11 +186,10 @@
                 </div>
                 
                 <div class="flex items-center space-x-2">
-                    <button class="relative p-2.5 text-slate-400 hover:text-slate-700 bg-slate-100/80 hover:bg-slate-100 rounded-xl transition border border-transparent shadow-inner">
-                        <span class="absolute top-2.5 right-2.5 w-2 h-2 bg-blue-600 rounded-full ring-2 ring-white"></span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                    </button>
-                </div>
+    <span class="text-xs font-semibold text-slate-500">
+        {{ now()->format('d/m/Y') }}
+    </span>
+</div>
             </header>
 
             <main class="py-6 pb-24 flex-1">
@@ -194,12 +204,8 @@
 
             <footer class="sticky bottom-0 lg:bottom-4 z-10 bg-white/70 border border-slate-200/60 backdrop-blur-md px-6 py-4 rounded-2xl shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.02)] flex flex-col sm:flex-row items-center justify-between text-[11px] font-semibold text-slate-400 tracking-wide gap-2">
                 <p>© 2026 Inventario Inclán. Panel de Control y Activos Institucionales.</p>
-                <div class="flex items-center space-x-4 text-slate-400">
-                    <a href="#" class="hover:text-blue-600 transition-colors">Soporte</a>
-                    <span class="text-slate-200">·</span>
-                    <a href="#" class="hover:text-blue-600 transition-colors">Logs</a>
-                    <span class="text-slate-200">·</span>
-                    <a href="#" class="hover:text-blue-600 transition-colors">Documentación</a>
+                <div class="flex items-center space-x-2 text-slate-400">
+                    <span>Versión 1.0.0</span>
                 </div>
             </footer>
         </div>

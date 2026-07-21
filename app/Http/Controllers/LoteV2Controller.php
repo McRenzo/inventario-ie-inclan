@@ -59,6 +59,13 @@ class LoteV2Controller extends Controller
 
     public function edit(Lote $lote): View
     {
+        if ($lote->estado_registro === 'fusionado') {
+            abort(
+                422,
+                'Este lote fue fusionado y no puede editarse.'
+            );
+        }
+
         $bienes = Bien::query()
             ->where('activo', true)
             ->whereIn('tipo_control', ['lote', 'consumible'])
@@ -295,6 +302,12 @@ class LoteV2Controller extends Controller
         Request $request,
         Lote $lote
     ): RedirectResponse {
+        if ($lote->estado_registro === 'fusionado') {
+            abort(
+                422,
+                'Este lote fue fusionado y no puede modificarse.'
+            );
+        }
         $datos = $request->validate([
             'bien_id' => [
                 'required',
