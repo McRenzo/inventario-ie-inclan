@@ -12,7 +12,7 @@
             </p>
 
             <h1 class="mt-1 text-2xl font-black tracking-tight text-slate-900">
-                Inventario V2
+                Inventario
             </h1>
 
             <p class="mt-1 text-sm text-slate-500">
