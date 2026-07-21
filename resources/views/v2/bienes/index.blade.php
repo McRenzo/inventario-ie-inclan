@@ -52,6 +52,13 @@
             >
                 Exportar Excel
             </a>
+
+            <a
+                href="{{ route('v2.bienes.importar.form') }}"
+                class="inline-flex items-center justify-center rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-black text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700"
+            >
+                Importar Excel
+            </a>
         </div>
     </div>
 

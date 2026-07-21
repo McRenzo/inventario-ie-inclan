@@ -11,11 +11,11 @@ class AdministradorSeeder extends Seeder
     public function run(): void
     {
         User::updateOrCreate(
-            ['email' => 'admin@inclan.edu.pe'],
+            ['email' => 'logisticainlcan@gmail.com'],
             [
                 'name' => 'Administrador',
                 'role' => 'administrador',
-                'password' => Hash::make('Admin1234*'),
+                'password' => Hash::make('InclanInventario2026*'),
                 'email_verified_at' => now(),
             ]
         );

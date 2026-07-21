@@ -68,6 +68,12 @@ Route::middleware(['auth'])->prefix('v2')->name('v2.')->group(function () {
 
     Route::get('/bienes/exportar', [BienV2Controller::class, 'exportarExcel'])
         ->name('bienes.exportar');
+
+    Route::get('/bienes/importar', [BienV2Controller::class, 'importForm'])
+        ->name('bienes.importar.form');
+
+    Route::post('/bienes/importar', [BienV2Controller::class, 'import'])
+        ->name('bienes.importar');
     
     Route::get('/bienes/{bien}/editar', [BienV2Controller::class, 'edit'])
         ->name('bienes.edit');

@@ -17,6 +17,7 @@ use Illuminate\Http\RedirectResponse;
 use App\Exports\InventarioV2Export;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use App\Imports\InventarioV2Import;
 
 class BienV2Controller extends Controller
 {
@@ -44,6 +45,51 @@ class BienV2Controller extends Controller
             $nombreArchivo
         );
     }
+
+    public function importForm(): View
+{
+    return view('v2.bienes.importar');
+}
+
+public function import(Request $request): RedirectResponse
+{
+    $request->validate([
+        'excel_file' => [
+            'required',
+            'file',
+            'mimes:xlsx,xls,csv',
+            'max:10240',
+        ],
+    ]);
+
+    try {
+        $importador = new InventarioV2Import();
+
+        Excel::import(
+            $importador,
+            $request->file('excel_file')
+        );
+
+        return redirect()
+            ->route('v2.bienes.index')
+            ->with(
+                'success',
+                "Importación completada. Registros importados: "
+                . $importador->importados()
+                . ". Registros omitidos: "
+                . $importador->omitidos()
+                . "."
+            );
+    } catch (\Throwable $e) {
+        return back()
+            ->withInput()
+            ->withErrors([
+                'excel_file' =>
+                    'Error al importar el archivo: '
+                    . $e->getMessage(),
+            ]);
+    }
+}
 
     public function index(Request $request): View
     {
