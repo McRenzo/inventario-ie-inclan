@@ -341,11 +341,11 @@
         <div class="rounded-3xl border border-slate-200/70 bg-white p-6 shadow-sm">
             <div class="mb-5">
                 <h2 class="font-black text-slate-900">
-                    Fechas y valorización
+                    Fechas y datos de adquisición
                 </h2>
 
                 <p class="mt-1 text-xs text-slate-400">
-                    El valor total se calculará automáticamente: cantidad × valor unitario.
+                    Registra información de origen, ingreso y comprobante del lote.
                 </p>
             </div>
 
@@ -401,36 +401,6 @@
                         value="{{ old('anio_ingreso') }}"
                         min="1900"
                         max="{{ now()->year }}"
-                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
-                    >
-                </div>
-
-                <div>
-                    <label class="mb-2 block text-sm font-bold text-slate-700">
-                        Valor unitario
-                    </label>
-
-                    <input
-                        type="number"
-                        name="valor_unitario"
-                        value="{{ old('valor_unitario') }}"
-                        min="0"
-                        step="0.01"
-                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
-                    >
-                </div>
-
-                <div>
-                    <label class="mb-2 block text-sm font-bold text-slate-700">
-                        Valor residual
-                    </label>
-
-                    <input
-                        type="number"
-                        name="valor_residual"
-                        value="{{ old('valor_residual', 0) }}"
-                        min="0"
-                        step="0.01"
                         class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
                     >
                 </div>
@@ -499,7 +469,7 @@
 
             <button
                 type="submit"
-                class="rounded-2xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700"
+                class="rounded-2xl bg-emerald-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700"
                 @disabled($bienes->isEmpty())
             >
                 Guardar lote

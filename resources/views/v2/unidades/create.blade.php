@@ -337,7 +337,7 @@
         <div class="rounded-3xl border border-slate-200/70 bg-white p-6 shadow-sm">
             <div class="mb-5">
                 <h2 class="font-black text-slate-900">
-                    Fechas y valorización
+                    Fechas y datos de adquisición
                 </h2>
             </div>
 
@@ -393,36 +393,6 @@
                         value="{{ old('anio_ingreso') }}"
                         min="1900"
                         max="{{ now()->year }}"
-                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
-                    >
-                </div>
-
-                <div>
-                    <label class="mb-2 block text-sm font-bold text-slate-700">
-                        Valor de adquisición
-                    </label>
-
-                    <input
-                        type="number"
-                        name="valor_adquisicion"
-                        value="{{ old('valor_adquisicion') }}"
-                        min="0"
-                        step="0.01"
-                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
-                    >
-                </div>
-
-                <div>
-                    <label class="mb-2 block text-sm font-bold text-slate-700">
-                        Valor residual
-                    </label>
-
-                    <input
-                        type="number"
-                        name="valor_residual"
-                        value="{{ old('valor_residual', 0) }}"
-                        min="0"
-                        step="0.01"
                         class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
                     >
                 </div>
