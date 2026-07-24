@@ -56,6 +56,95 @@
             </div>
         </div>
 
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wide text-blue-600">
+                        Valorización patrimonial
+                    </p>
+
+                    <h2 class="mt-1 text-lg font-black text-slate-900">
+                        Resumen económico del inventario
+                    </h2>
+
+                    <p class="mt-1 text-sm text-slate-500">
+                        Comparativo entre adquisición, valor contable y valor patrimonial actualizado.
+                    </p>
+                </div>
+
+                <a
+                    href="{{ route('v2.valorizacion.index') }}"
+                    class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700"
+                >
+                    Ir a valorización
+                </a>
+            </div>
+
+            <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                <div class="rounded-2xl bg-slate-100 p-5">
+                    <p class="text-xs font-bold uppercase tracking-wide text-slate-600">
+                        Valor de adquisición
+                    </p>
+
+                    <p class="mt-2 text-2xl font-black text-slate-800">
+                        S/ {{ number_format((float) $data['valorAdquisicionTotal'], 2) }}
+                    </p>
+                </div>
+
+                <div class="rounded-2xl bg-emerald-50 p-5">
+                    <p class="text-xs font-bold uppercase tracking-wide text-emerald-700">
+                        Valor en libros
+                    </p>
+
+                    <p class="mt-2 text-2xl font-black text-emerald-700">
+                        S/ {{ number_format((float) $data['valorEnLibrosTotal'], 2) }}
+                    </p>
+                </div>
+
+                <div class="rounded-2xl bg-blue-50 p-5">
+                    <p class="text-xs font-bold uppercase tracking-wide text-blue-700">
+                        Valor patrimonial
+                    </p>
+
+                    <p class="mt-2 text-2xl font-black text-blue-700">
+                        S/ {{ number_format((float) $data['valorPatrimonial'], 2) }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-4 grid gap-4 sm:grid-cols-3">
+                <div class="rounded-2xl bg-emerald-50 px-5 py-4">
+                    <p class="text-xs font-bold uppercase tracking-wide text-emerald-700">
+                        Bienes valorizados
+                    </p>
+
+                    <p class="mt-2 text-2xl font-black text-emerald-700">
+                        {{ $data['bienesValorizados'] }}
+                    </p>
+                </div>
+
+                <div class="rounded-2xl bg-amber-50 px-5 py-4">
+                    <p class="text-xs font-bold uppercase tracking-wide text-amber-700">
+                        Pendientes
+                    </p>
+
+                    <p class="mt-2 text-2xl font-black text-amber-700">
+                        {{ $data['bienesPendientesValorizacion'] }}
+                    </p>
+                </div>
+
+                <div class="rounded-2xl bg-blue-50 px-5 py-4">
+                    <p class="text-xs font-bold uppercase tracking-wide text-blue-700">
+                        Con ajuste manual
+                    </p>
+
+                    <p class="mt-2 text-2xl font-black text-blue-700">
+                        {{ $data['bienesConValorAjustado'] }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
             <a
                 href="{{ route('v2.prestamos.index', ['estado' => 'activo']) }}"

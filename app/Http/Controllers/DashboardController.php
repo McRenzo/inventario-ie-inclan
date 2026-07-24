@@ -44,6 +44,31 @@ class DashboardController extends Controller
                     ->where('cantidad_actual', '>', 0)
                     ->count(),
 
+            'valorAdquisicionTotal' => UnidadBien::query()
+                ->sum('valor_adquisicion'),
+
+            'valorEnLibrosTotal' => UnidadBien::query()
+                ->sum('valor_en_libros'),
+
+            'valorPatrimonial' => UnidadBien::query()
+                ->selectRaw('SUM(COALESCE(valor_ajustado, valor_en_libros, 0)) as total')
+                ->value('total') ?? 0,
+
+            'bienesValorizados' => UnidadBien::query()
+                ->where('valor_adquisicion', '>', 0)
+                ->count(),
+
+            'bienesPendientesValorizacion' => UnidadBien::query()
+                ->where(function ($query) {
+                    $query->whereNull('valor_adquisicion')
+                        ->orWhere('valor_adquisicion', '<=', 0);
+                })
+                ->count(),
+
+            'bienesConValorAjustado' => UnidadBien::query()
+                ->whereNotNull('valor_ajustado')
+                ->count(),
+                
             'enMantenimiento' =>
                 \App\Models\UnidadBien::query()
                     ->where('situacion', 'en_mantenimiento')

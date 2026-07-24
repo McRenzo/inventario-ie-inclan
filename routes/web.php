@@ -14,6 +14,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TransferenciaV2Controller;
 use App\Http\Controllers\AreaV2Controller;
 use App\Http\Controllers\UbicacionV2Controller;
+use App\Http\Controllers\ValorizacionV2Controller;
 
 // Ruta Raíz
 Route::get('/', function () {
@@ -113,6 +114,15 @@ Route::middleware(['auth'])->prefix('v2')->name('v2.')->group(function () {
 
     Route::post('/transferencias', [TransferenciaV2Controller::class, 'store'])
         ->name('transferencias.store');
+    
+    Route::get('/valorizacion', [ValorizacionV2Controller::class, 'index'])
+        ->name('valorizacion.index');
+
+    Route::get('/valorizacion/{unidad}/editar', [ValorizacionV2Controller::class, 'edit'])
+        ->name('valorizacion.edit');
+
+    Route::put('/valorizacion/{unidad}', [ValorizacionV2Controller::class, 'update'])
+        ->name('valorizacion.update');
 
     Route::get('/parametros', function () {
         return view('v2.parametros.index');

@@ -214,73 +214,24 @@
         <div class="rounded-3xl border border-slate-200/70 bg-white p-6 shadow-sm">
             <div class="mb-5">
                 <h2 class="font-black text-slate-900">
-                    Valorización
+                    Observaciones
                 </h2>
+
+                <p class="mt-1 text-xs text-slate-400">
+                    Actualiza notas generales sobre la ficha del bien.
+                </p>
             </div>
 
-            <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+            <div>
+                <label class="mb-2 block text-sm font-bold text-slate-700">
+                    Observaciones
+                </label>
 
-                <div class="flex items-center pt-7">
-                    <label class="inline-flex cursor-pointer items-center gap-3">
-                        <input
-                            type="checkbox"
-                            name="es_depreciable"
-                            value="1"
-                            @checked(old('es_depreciable', $bien->es_depreciable))
-                            class="h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                        >
-
-                        <span class="text-sm font-bold text-slate-700">
-                            Este bien es depreciable
-                        </span>
-                    </label>
-                </div>
-
-                <div>
-                    <label class="mb-2 block text-sm font-bold text-slate-700">
-                        Vida útil en meses
-                    </label>
-
-                    <input
-                        type="number"
-                        name="vida_util_meses"
-                        value="{{ old('vida_util_meses', $bien->vida_util_meses) }}"
-                        min="1"
-                        max="1200"
-                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
-                    >
-                </div>
-
-                <div>
-                    <label class="mb-2 block text-sm font-bold text-slate-700">
-                        Valor residual %
-                    </label>
-
-                    <input
-                        type="number"
-                        name="valor_residual_porcentaje"
-                        value="{{ old(
-                            'valor_residual_porcentaje',
-                            $bien->valor_residual_porcentaje
-                        ) }}"
-                        min="0"
-                        max="100"
-                        step="0.01"
-                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
-                    >
-                </div>
-
-                <div class="md:col-span-2">
-                    <label class="mb-2 block text-sm font-bold text-slate-700">
-                        Observaciones
-                    </label>
-
-                    <textarea
-                        name="observaciones"
-                        rows="4"
-                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
-                    >{{ old('observaciones', $bien->observaciones) }}</textarea>
-                </div>
+                <textarea
+                    name="observaciones"
+                    rows="4"
+                    class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
+                >{{ old('observaciones', $bien->observaciones) }}</textarea>
             </div>
         </div>
 

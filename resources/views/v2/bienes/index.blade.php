@@ -114,7 +114,7 @@
 
         <div class="rounded-3xl border border-slate-200/70 bg-white p-5 shadow-sm">
             <p class="text-xs font-bold uppercase tracking-wider text-slate-400">
-                Valor en libros
+                Valor patrimonial
             </p>
 
             <p class="mt-3 text-3xl font-black text-slate-900">

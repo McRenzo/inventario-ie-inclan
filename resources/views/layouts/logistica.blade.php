@@ -121,6 +121,26 @@
                     </div>
 
                     <div class="space-y-1">
+                        <p class="px-3 pb-1 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                            Gestión
+                        </p>
+
+                        <a href="{{ route('v2.valorizacion.index') }}"
+                            class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-all duration-200 group
+                                {{ request()->routeIs('v2.valorizacion.*')
+                                    ? 'bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/20'
+                                    : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900' }}">
+                            <svg class="w-4 h-4 transition-transform group-hover:scale-105" fill="none"
+                                stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V6m0 12v-2m0 0c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+
+                            <span>Valorización</span>
+                        </a>
+                    </div>
+
+                    <div class="space-y-1">
                         <p class="px-3 pb-1 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Ajustes</p>
 
                         <a href="{{ route('v2.parametros.index') }}"
