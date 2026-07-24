@@ -376,11 +376,11 @@
         <div class="rounded-3xl border border-slate-200/70 bg-white p-6 shadow-sm">
             <div class="mb-5">
                 <h2 class="font-black text-slate-900">
-                    Fechas y valorización
+                    Fechas y datos de adquisición
                 </h2>
 
                 <p class="mt-1 text-xs text-slate-400">
-                    El valor total se recalculará usando la cantidad actual y el valor unitario.
+                    Registra información de origen, ingreso y comprobante del lote.
                 </p>
             </div>
 
@@ -445,36 +445,6 @@
                         value="{{ old('anio_ingreso', $lote->anio_ingreso) }}"
                         min="1900"
                         max="{{ now()->year }}"
-                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
-                    >
-                </div>
-
-                <div>
-                    <label class="mb-2 block text-sm font-bold text-slate-700">
-                        Valor unitario
-                    </label>
-
-                    <input
-                        type="number"
-                        name="valor_unitario"
-                        value="{{ old('valor_unitario', $lote->valor_unitario) }}"
-                        min="0"
-                        step="0.01"
-                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
-                    >
-                </div>
-
-                <div>
-                    <label class="mb-2 block text-sm font-bold text-slate-700">
-                        Valor residual
-                    </label>
-
-                    <input
-                        type="number"
-                        name="valor_residual"
-                        value="{{ old('valor_residual', $lote->valor_residual) }}"
-                        min="0"
-                        step="0.01"
                         class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
                     >
                 </div>

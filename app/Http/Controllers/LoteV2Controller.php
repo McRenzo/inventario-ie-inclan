@@ -203,18 +203,6 @@ class LoteV2Controller extends Controller
                 'max:' . now()->year,
             ],
 
-            'valor_unitario' => [
-                'nullable',
-                'numeric',
-                'min:0',
-            ],
-
-            'valor_residual' => [
-                'nullable',
-                'numeric',
-                'min:0',
-            ],
-
             'proveedor' => [
                 'nullable',
                 'string',
@@ -245,22 +233,17 @@ class LoteV2Controller extends Controller
             $codigoInterno = $this->generarCodigoInterno();
 
             $cantidad = (float) $datos['cantidad_inicial'];
-            $valorUnitario = isset($datos['valor_unitario'])
-                ? (float) $datos['valor_unitario']
-                : null;
-
-            $valorTotal = $valorUnitario !== null
-                ? round($cantidad * $valorUnitario, 2)
-                : null;
 
             $lote = Lote::create([
                 ...$datos,
                 'codigo_interno' => $codigoInterno,
                 'cantidad_actual' => $cantidad,
-                'vida_util_meses' => $bien->vida_util_meses,
-                'valor_total' => $valorTotal,
-                'valor_en_libros' => $valorTotal,
+                'vida_util_meses' => null,
+                'valor_unitario' => null,
+                'valor_total' => 0,
+                'valor_residual' => 0,
                 'depreciacion_acumulada' => 0,
+                'valor_en_libros' => 0,
                 'valor_ajustado' => null,
                 'moneda' => 'PEN',
                 'creado_por' => auth()->id(),
@@ -407,18 +390,6 @@ class LoteV2Controller extends Controller
                 'max:' . now()->year,
             ],
 
-            'valor_unitario' => [
-                'nullable',
-                'numeric',
-                'min:0',
-            ],
-
-            'valor_residual' => [
-                'nullable',
-                'numeric',
-                'min:0',
-            ],
-
             'proveedor' => [
                 'nullable',
                 'string',
@@ -448,16 +419,6 @@ class LoteV2Controller extends Controller
 
             $cantidadAnterior = (float) $lote->cantidad_actual;
             $cantidadNueva = (float) $datos['cantidad_actual'];
-
-            $valorUnitario = isset($datos['valor_unitario'])
-                ? (float) $datos['valor_unitario']
-                : null;
-
-            $datos['valor_total'] = $valorUnitario !== null
-                ? round($cantidadNueva * $valorUnitario, 2)
-                : null;
-
-            $datos['valor_en_libros'] = $datos['valor_total'];
 
             $lote->fill($datos);
 

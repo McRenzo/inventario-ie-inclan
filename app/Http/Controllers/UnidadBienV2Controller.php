@@ -197,18 +197,6 @@ class UnidadBienV2Controller extends Controller
                 'max:' . now()->year,
             ],
 
-            'valor_adquisicion' => [
-                'nullable',
-                'numeric',
-                'min:0',
-            ],
-
-            'valor_residual' => [
-                'nullable',
-                'numeric',
-                'min:0',
-            ],
-
             'proveedor' => [
                 'nullable',
                 'string',
@@ -238,17 +226,14 @@ class UnidadBienV2Controller extends Controller
 
             $codigoInterno = $this->generarCodigoInterno();
 
-            $vidaUtilMeses = $bien->vida_util_meses;
-
-            $valorAdquisicion = $datos['valor_adquisicion'] ?? null;
-            $valorResidual = $datos['valor_residual'] ?? 0;
-
             $unidad = UnidadBien::create([
                 ...$datos,
                 'codigo_interno' => $codigoInterno,
-                'vida_util_meses' => $vidaUtilMeses,
+                'vida_util_meses' => null,
+                'valor_adquisicion' => null,
+                'valor_residual' => 0,
                 'depreciacion_acumulada' => 0,
-                'valor_en_libros' => $valorAdquisicion,
+                'valor_en_libros' => 0,
                 'valor_ajustado' => null,
                 'moneda' => 'PEN',
                 'creado_por' => auth()->id(),
@@ -390,18 +375,6 @@ class UnidadBienV2Controller extends Controller
                 'integer',
                 'min:1900',
                 'max:' . now()->year,
-            ],
-
-            'valor_adquisicion' => [
-                'nullable',
-                'numeric',
-                'min:0',
-            ],
-
-            'valor_residual' => [
-                'nullable',
-                'numeric',
-                'min:0',
             ],
 
             'proveedor' => [
