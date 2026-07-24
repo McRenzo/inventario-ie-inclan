@@ -442,8 +442,19 @@
                     </div>
                 </div>
 
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-slate-100 text-sm">
+                <div class="overflow-x-auto max-w-full">
+                    <table class="min-w-[1320px] table-fixed">
+                        <colgroup>
+                            <col class="w-[110px]">
+                            <col class="w-[150px]">
+                            <col class="w-[190px]">
+                            <col class="w-[220px]">
+                            <col class="w-[300px]">
+                            <col class="w-[120px]">
+                            <col class="w-[120px]">
+                            <col class="w-[110px]">
+                            <col class="w-[130px]">
+                        </colgroup>
                         <thead class="bg-slate-50/80">
                             <tr class="text-left text-xs font-bold uppercase tracking-wider text-slate-400">
                                 <th class="w-12 px-5 py-4">
@@ -469,7 +480,7 @@
                             @forelse ($unidades as $unidad)
                                 <tr class="transition hover:bg-slate-50/70">
 
-                                    <td class="px-5 py-4">
+                                    <td class="px-5 py-4 align-top">
                                         <div class="flex items-center gap-2">
                                             <input
                                                 type="checkbox"
@@ -491,47 +502,55 @@
                                         </div>
                                     </td>
                                     
-                                    <td class="whitespace-nowrap px-5 py-4">
-                                        <span class="font-bold text-blue-600">
+                                    <td class="px-5 py-4 align-top">
+                                        <span class="block break-words font-bold text-blue-600">
                                             {{ $unidad->codigo_interno }}
                                         </span>
                                     </td>
 
-                                    <td class="px-5 py-4">
-                                        <p class="font-bold text-slate-900">
-                                            {{ $unidad->bien?->nombre ?? 'Sin ficha' }}
-                                        </p>
+                                    <td class="px-5 py-4 align-top">
+                                        <div class="space-y-1">
+                                            <p class="font-bold text-slate-900 whitespace-normal break-words leading-snug">
+                                                {{ $unidad->bien?->nombre ?? 'Sin ficha' }}
+                                            </p>
 
-                                        <p class="mt-1 text-xs text-slate-400">
-                                            {{ trim(
-                                                ($unidad->bien?->marca ?? '') . ' ' .
-                                                ($unidad->bien?->modelo ?? '')
-                                            ) ?: 'Sin marca o modelo' }}
-                                        </p>
+                                            <p class="text-xs text-slate-400 whitespace-normal break-words leading-snug">
+                                                {{ trim(
+                                                    ($unidad->bien?->marca ?? '') . ' ' .
+                                                    ($unidad->bien?->modelo ?? '')
+                                                ) ?: 'Sin marca o modelo' }}
+                                            </p>
 
-                                        <a
-                                            href="{{ route('v2.bienes.edit', $unidad->bien) }}"
-                                            class="mt-2 inline-flex text-xs font-bold text-blue-600 hover:text-blue-800"
-                                        >
-                                            Editar ficha
-                                        </a>
+                                            @if ($unidad->bien)
+                                                <a
+                                                    href="{{ route('v2.bienes.edit', $unidad->bien) }}"
+                                                    class="inline-flex text-xs font-bold text-blue-600 hover:text-blue-800"
+                                                >
+                                                    Editar ficha
+                                                </a>
+                                            @endif
+                                        </div>
                                     </td>
 
-                                    <td class="whitespace-nowrap px-5 py-4 text-slate-600">
-                                        {{ $unidad->numero_serie ?: 'Sin serie' }}
+                                    <td class="px-5 py-4 align-top text-slate-600">
+                                        <div class="break-all text-sm leading-snug">
+                                            {{ $unidad->numero_serie ?: 'Sin serie' }}
+                                        </div>
                                     </td>
 
-                                    <td class="whitespace-nowrap px-5 py-4 text-slate-600">
-                                        {{ $unidad->ubicacion?->nombre ?? 'Sin ubicación' }}
+                                    <td class="px-5 py-4 align-top text-slate-600">
+                                        <div class="whitespace-normal break-words text-sm leading-snug">
+                                            {{ $unidad->ubicacion?->nombre ?? 'Sin ubicación' }}
+                                        </div>
                                     </td>
 
-                                    <td class="whitespace-nowrap px-5 py-4">
+                                    <td class="px-5 py-4 align-top">
                                         <span class="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
                                             {{ $unidad->estadoConservacion?->nombre ?? 'No determinado' }}
                                         </span>
                                     </td>
 
-                                    <td class="whitespace-nowrap px-5 py-4">
+                                    <td class="px-5 py-4 align-top">
                                         <span class="inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-bold capitalize text-blue-700">
                                             {{ str_replace('_', ' ', $unidad->situacion) }}
                                         </span>
@@ -541,7 +560,7 @@
                                         S/ {{ number_format((float) ($unidad->valor_actual ?? 0), 2) }}
                                     </td>
 
-                                    <td class="whitespace-nowrap px-5 py-4 text-right">
+                                    <td class="px-5 py-4 align-top text-right">
                                         <a
                                             href="{{ route('v2.unidades.show', $unidad) }}"
                                             class="inline-flex items-center justify-center rounded-xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-blue-50 hover:text-blue-700"
@@ -587,7 +606,7 @@
                     </div>
                 </div>
 
-                <div class="overflow-x-auto">
+                <div class="overflow-x-auto max-w-full">
                     <table class="min-w-full divide-y divide-slate-100 text-sm">
                         <thead class="bg-slate-50/80">
                             <tr class="text-left text-xs font-bold uppercase tracking-wider text-slate-400">

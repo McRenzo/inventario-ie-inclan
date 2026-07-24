@@ -23,7 +23,7 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
-<body class="bg-[#f4f7fa] antialiased text-slate-800 select-none">
+<body class="bg-[#f4f7fa] antialiased text-slate-800 select-none overflow-x-hidden">
 
     <div class="flex min-h-screen p-0 lg:p-4 gap-4">
 
@@ -170,7 +170,7 @@
             </div>
         </aside>
 
-        <div class="flex-1 lg:ml-[19rem] flex flex-col min-h-screen">
+        <div class="w-full lg:w-[calc(100%-19rem)] lg:ml-[19rem] flex flex-col min-h-screen overflow-x-hidden">
 
             <header
                 class="h-16 bg-white/70 border border-slate-200/60 flex items-center justify-between px-6 rounded-2xl sticky top-0 lg:top-4 z-10 shadow-[0_4px_20px_-5px_rgba(0,0,0,0.02)] backdrop-blur-md">
